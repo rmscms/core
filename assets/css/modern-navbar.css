@@ -1,0 +1,90 @@
+
+
+.nav-item {
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+
+.nav-item:hover .nav-icon-circle {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.2) !important;
+}
+
+.nav-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.nav-icon-circle i {
+    font-size: 1.2rem;
+    color: white;
+}
+
+.nav-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-icon-wrapper .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+}
+
+/* افکت glow برای آیکون‌ها */
+.nav-icon-circle.bg-danger {
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.3);
+}
+
+.nav-icon-circle.bg-danger:hover {
+    box-shadow: 0 0 25px rgba(220, 53, 69, 0.5) !important;
+}
+
+.nav-icon-circle.bg-primary {
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.3);
+}
+
+.nav-icon-circle.bg-primary:hover {
+    box-shadow: 0 0 25px rgba(13, 110, 253, 0.5) !important;
+}
+
+.nav-icon-circle.bg-success {
+    box-shadow: 0 0 15px rgba(25, 135, 84, 0.3);
+}
+
+.nav-icon-circle.bg-success:hover {
+    box-shadow: 0 0 25px rgba(25, 135, 84, 0.5) !important;
+}
+
+.nav-icon-circle.bg-secondary {
+    box-shadow: 0 0 15px rgba(108, 117, 125, 0.3);
+}
+
+.nav-icon-circle.bg-secondary:hover {
+    box-shadow: 0 0 25px rgba(108, 117, 125, 0.5) !important;
+}
+
+/* استایل برای دکمه مرکزی */
+.center-add-btn {
+    margin-top: -20px;
+}
+
+.center-add-btn .btn {
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    transition: all 0.3s ease;
+}
+
+.center-add-btn .btn i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.center-add-btn .btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.4) !important;
+} 
