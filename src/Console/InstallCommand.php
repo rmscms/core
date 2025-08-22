@@ -16,20 +16,14 @@ class InstallCommand extends Command
 
         $results = [];
 
-        // انتشار فایل تنظیمات
         $results[] = $this->publishConfig();
-        // انتشار assets ادمین
         $results[] = $this->publishAdminAssets();
-        // انتشار assets کاربری
         $results[] = $this->publishFrontAssets();
-        // انتشار ویوهای ادمین
         $results[] = $this->publishAdminViews();
-        // اجرای مهاجرت‌ها
+        $results[] = $this->publishTranslations();
         $results[] = $this->runMigrations();
-        // اجرای Seeder
         $results[] = $this->runSeeder();
 
-        // نمایش نتایج به صورت جدول
         $this->table(
             ['Step', 'Status', 'Message'],
             array_map(function ($result) {
@@ -41,7 +35,6 @@ class InstallCommand extends Command
             }, $results)
         );
 
-        // نمایش یوزر و پسورد
         $this->info('RMS CMS installed successfully!');
         $this->line('You can login with the following credentials:');
         $this->line('Email: admin@example.com');
@@ -84,9 +77,19 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('vendor:publish', ['--tag' => 'cms-admin-views']);
-            return ['step' => 'Publish Admin Views', 'status' => true, 'message' => 'Published to resources/views/' . config('cms.admin_theme')];
+            return ['step' => 'Publish Admin Views', 'status' => true, 'message' => 'Published to resources/views/vendor/cms'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Admin Views', 'status' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    protected function publishTranslations()
+    {
+        try {
+            Artisan::call('vendor:publish', ['--tag' => 'cms-translations']);
+            return ['step' => 'Publish Translations', 'status' => true, 'message' => 'Published to resources/lang'];
+        } catch (\Exception $e) {
+            return ['step' => 'Publish Translations', 'status' => false, 'message' => $e->getMessage()];
         }
     }
 

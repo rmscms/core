@@ -21,10 +21,16 @@ class CoreServiceProvider extends ServiceProvider
         ], 'cms-front-assets');
 
         $this->publishes([
-            __DIR__.'/../resources/views/admin' => resource_path('views/'.config('cms.admin_theme')),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/cms'),
         ], 'cms-admin-views');
 
+        $this->publishes([
+            __DIR__.'/../resources/lang' => resource_path('lang'),
+        ], 'cms-translations');
+
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cms');
+
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'cms');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
