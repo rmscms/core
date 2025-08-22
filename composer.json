@@ -19,7 +19,8 @@
     },
     "autoload": {
         "psr-4": {
-            "RMS\\Core\\": "src/"
+            "RMS\\Core\\": "src/",
+            "RMS\\Core\\Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "src/Helpers.php"
