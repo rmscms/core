@@ -30940,7 +30940,9 @@ iframe.wait-autoplay {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap
 }
-
+.khatzir{
+    border-bottom: var(--card-border-width) solid var(--card-border-color);
+}
 .gridjs-pagination .gridjs-pages button {
     position: relative;
     display: block;
@@ -30956,12 +30958,12 @@ iframe.wait-autoplay {
 }
 @media (max-width: 767.98px) {
     .content {
-        padding-bottom: 80px !important;
+        padding-bottom: 200px !important;
     }
 
     /* Adjust back-to-top button position for mobile */
     .btn-to-top {
-        bottom: 100px !important;
+        bottom: 110px !important;
         z-index: 1000 !important;
     }
 }
@@ -30978,7 +30980,22 @@ iframe.wait-autoplay {
     background-color: var(--pagination-hover-bg);
     border-color: var(--pagination-hover-border-color)
 }
+.chart-scroll-container {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
 
+.chart-scroll-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+
+.chart-scroll-container:active {
+    cursor: grabbing;
+}
+
+.chart-content {
+    touch-action: pan-x;
+}
 .gridjs-pagination .gridjs-pages button:focus {
     z-index: 3;
     color: var(--pagination-focus-color);

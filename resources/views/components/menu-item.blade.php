@@ -1,4 +1,3 @@
-```blade
 @props([
     'href' => '#',
     'icon' => null,

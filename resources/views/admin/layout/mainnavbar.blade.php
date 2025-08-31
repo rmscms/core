@@ -1,4 +1,3 @@
-```blade
 <div class="navbar navbar-expand-lg navbar-static shadow">
     <div class="container-fluid">
         <div class="d-flex d-lg-none me-2">
@@ -213,29 +212,29 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="{{ route('admin.profile') }}" class="dropdown-item">
+                    <a href="#" class="dropdown-item">
                         <i class="ph-user-circle me-2"></i>
                         {{ trans('auth.my_profile') }}
                     </a>
-                    <a href="{{ route('admin.subscription') }}" class="dropdown-item">
+                    <a href="#" class="dropdown-item">
                         <i class="ph-currency-circle-dollar me-2"></i>
                         {{ trans('auth.my_subscription') }}
                     </a>
-                    <a href="{{ route('admin.orders') }}" class="dropdown-item">
+                    <a href="#" class="dropdown-item">
                         <i class="ph-shopping-cart me-2"></i>
                         {{ trans('auth.my_orders') }}
                     </a>
-                    <a href="{{ route('admin.inbox') }}" class="dropdown-item">
+                    <a href="#" class="dropdown-item">
                         <i class="ph-envelope-open me-2"></i>
                         {{ trans('auth.my_inbox') }}
                         <span class="badge bg-primary rounded-pill ms-auto">26</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="{{ route('admin.settings') }}" class="dropdown-item">
+                    <a href="#" class="dropdown-item">
                         <i class="ph-gear me-2"></i>
                         {{ trans('auth.account_settings') }}
                     </a>
-                    <a href="{{ route('admin.logout') }}" class="dropdown-item">
+                    <a href="#" class="dropdown-item">
                         <i class="ph-sign-out me-2"></i>
                         {{ trans('auth.logout') }}
                     </a>
