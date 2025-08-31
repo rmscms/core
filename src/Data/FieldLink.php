@@ -2,8 +2,6 @@
 
 namespace RMS\Core\Data;
 
-use RMS\Core\View\HelperList\Link;
-
 /**
  * Trait for attaching a link to a field.
  */

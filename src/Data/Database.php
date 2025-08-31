@@ -3,7 +3,7 @@
 namespace RMS\Core\Data;
 
 use Illuminate\Database\Query\Builder;
-use RMS\Core\Controllers\Features\Filter\Column;
+use RMS\Core\Data\Column;
 
 /**
  * Class for managing database queries for list generation.

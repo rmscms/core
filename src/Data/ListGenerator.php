@@ -1,91 +1,107 @@
 <?php
 
-namespace RMS\Core\View\HelperList;
+namespace RMS\Core\Data;
 
 use Illuminate\Support\Str;
 use RMS\Core\Contracts\Data\UseDatabase;
-use RMS\Core\Data\Database;
-use RMS\Core\Contracts\Stats\HasStats;
+use RMS\Core\Contracts\Filter\HasSort;
 use RMS\Core\Contracts\Filter\ShouldFilter;
-use RMS\Core\Data\ListResponse;
+use RMS\Core\Contracts\List\HasList;
 
 /**
- * Trait Generator
- * @package RMS\Core\View\HelperList
+ * Class ListGenerator
  */
-class Generator
+class ListGenerator
 {
     use Actions;
 
     /**
      * Determine create button is active or not
-     * @var bool $create
+     *
+     * @var bool
      */
-    public $create = true;
+    public bool $create = true;
 
     /**
      * Identifier key in each row
-     * @var string $identifier
+     *
+     * @var string
      */
-    public $identifier = 'id';
+    public string $identifier = 'id';
 
     /**
      * If set to false, loop from foreach begins from 1
-     * @var bool $view_id
+     *
+     * @var bool
      */
-    public $view_id = true;
+    public bool $view_id = true;
 
     /**
      * Base route parameter
-     * @var string|null $route_parameter
+     *
+     * @var string|null
      */
-    public $route_parameter;
+    public ?string $route_parameter;
 
     /**
      * Display rows per page
-     * @var int $per_page
+     *
+     * @var int
      */
-    public $per_page = 20;
+    public int $per_page = 20;
 
     /**
      * Simple pagination
-     * @var bool $simple_pagination
+     *
+     * @var bool
      */
-    public $simple_pagination = false;
+    public bool $simple_pagination = false;
 
     /**
      * Fields
-     * @var array $fields
+     *
+     * @var array
      */
-    protected $fields = [];
+    protected array $fields = [];
 
     /**
-     * @var HasList $list
+     * List instance implementing HasList
+     *
+     * @var HasList
      */
     protected $list;
 
     /**
-     * @var string $base_route
+     * Base route
+     *
+     * @var string
      */
-    public $base_route;
+    public string $base_route;
 
     /**
-     * @var array $links
+     * Array of links
+     *
+     * @var array
      */
-    public $links = [];
+    public array $links = [];
 
     /**
-     * @var bool $batch_destroy
+     * Enable batch destroy
+     *
+     * @var bool
      */
-    public $batch_destroy = true;
+    public bool $batch_destroy = true;
 
     /**
-     * @var bool $batch_active
+     * Enable batch active
+     *
+     * @var bool
      */
-    public $batch_active = false;
+    public bool $batch_active = false;
 
     /**
-     * Generator constructor.
+     * ListGenerator constructor.
+     *
      * @param HasList $list
      */
     public function __construct(HasList $list)
@@ -93,7 +109,7 @@ class Generator
         $this->list = $list;
         $this->route_parameter = $list->routeParameter();
         $this->base_route = $list->baseRoute();
-        $this->fields = $this->list->getListFields();
+        $this->fields = $list->getListFields();
     }
 
     /**
@@ -147,7 +163,7 @@ class Generator
      * @param Link $link
      * @return $this
      */
-    public function link(Link $link)
+    public function link(Link $link): self
     {
         $this->links[] = $link;
         return $this;
