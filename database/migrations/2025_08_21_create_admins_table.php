@@ -4,28 +4,41 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+/**
+ * Migration for creating the admins table.
+ */
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
     {
         Schema::create('admins', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('mobile')->unique();
-            $table->string('password');
-            $table->string('role');
-            $table->boolean('active')->default(true);
-            $table->timestamp('last_login_at')->nullable();
-            $table->string('last_login_ip')->nullable();
-            $table->boolean('two_factor_enabled')->default(false);
-            $table->string('two_factor_secret')->nullable();
-            $table->rememberToken();
-            $table->timestamps();
+            $table->id()->comment('Primary key');
+            $table->string('name')->comment('Admin full name');
+            $table->string('email')->unique()->comment('Unique email address');
+            $table->string('mobile')->unique()->comment('Unique mobile number');
+            $table->string('password')->comment('Hashed password');
+            $table->string('role')->index()->comment('Admin role (e.g., super_admin, editor)');
+            $table->boolean('active')->default(true)->comment('Account status');
+            $table->timestamp('last_login_at')->nullable()->comment('Last login timestamp');
+            $table->string('last_login_ip')->nullable()->comment('Last login IP address');
+            $table->boolean('two_factor_enabled')->default(false)->comment('Two-factor authentication status');
+            $table->string('two_factor_secret')->nullable()->comment('Two-factor secret key');
+            $table->rememberToken()->comment('Remember me token');
+            $table->timestamps()->comment('Created and updated timestamps');
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
     {
         Schema::dropIfExists('admins');
     }
