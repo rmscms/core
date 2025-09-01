@@ -4,9 +4,13 @@ namespace RMS\Core\Data;
 
 use RMS\Core\Contracts\Data\UseDatabase;
 use RMS\Core\Contracts\Form\HasForm;
+use InvalidArgumentException;
 
 /**
- * Form generator
+ * Enhanced form generator with improved Database integration.
+ * 
+ * This class generates forms with full Database class support,
+ * providing fluent interfaces and enhanced query capabilities.
  */
 class FormGenerator
 {
@@ -22,7 +26,7 @@ class FormGenerator
      *
      * @var HasForm
      */
-    public $form;
+    public HasForm $form;
 
     /**
      * Array of form fields.
@@ -81,31 +85,148 @@ class FormGenerator
     public array $validation_rules = [];
 
     /**
+     * Database instance for data operations.
+     *
+     * @var Database|null
+     */
+    protected ?Database $database = null;
+
+    /**
      * FormGenerator constructor.
      *
      * @param HasForm $form
      * @param int|null $id
      * @param array $fields
+     * @throws InvalidArgumentException
      */
-    public function __construct($form, ?int $id = null, array $fields = [])
+    public function __construct(HasForm $form, ?int $id = null, array $fields = [])
     {
-        if (!$form instanceof HasForm) {
-            throw new \InvalidArgumentException('Form must implement HasForm');
-        }
         $this->form = $form;
         $this->fields = $fields ?: $form->getFieldsForm();
         $this->id = $id;
+        
+        $this->validateFields();
+        $this->initializeDatabase();
     }
 
     /**
-     * Generate the form response.
+     * Static factory method for creating FormGenerator instances.
+     *
+     * @param HasForm $form
+     * @param int|null $id
+     * @param array $fields
+     * @return static
+     */
+    public static function make(HasForm $form, ?int $id = null, array $fields = []): static
+    {
+        return new static($form, $id, $fields);
+    }
+
+    /**
+     * Generate the form response with enhanced data loading.
      *
      * @return FormResponse|null
      */
     public function generate(): ?FormResponse
     {
-        $values = $this->form instanceof UseDatabase ? $this->form->model($this->id)->toArray() : [];
+        $values = $this->loadFormValues();
         return new FormResponse($this, $this->form, $values);
+    }
+
+    /**
+     * Load form values using Database class or fallback method.
+     *
+     * @return array
+     */
+    protected function loadFormValues(): array
+    {
+        if (!$this->form instanceof UseDatabase || !$this->id) {
+            return [];
+        }
+
+        try {
+            if ($this->database) {
+                // Use enhanced Database class
+                $record = $this->database
+                    ->where($this->identifier, '=', $this->id)
+                    ->first();
+                
+                return $record ? (array) $record : [];
+            }
+            
+            // Fallback to model method
+            $model = $this->form->model($this->id);
+            return $model ? $model->toArray() : [];
+            
+        } catch (\Exception $e) {
+            // Log error and return empty array for graceful degradation
+            error_log('FormGenerator: Error loading values - ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Initialize Database instance if form uses database.
+     *
+     * @return void
+     */
+    protected function initializeDatabase(): void
+    {
+        if ($this->form instanceof UseDatabase) {
+            try {
+                $tableName = $this->form->getTable();
+                $this->database = Database::make($this->fields, $tableName);
+                
+                // Apply any security constraints from the form
+                $this->applyFormSecurityConstraints();
+                
+            } catch (\Exception $e) {
+                // Log warning but continue without database
+                error_log('FormGenerator: Could not initialize Database - ' . $e->getMessage());
+                $this->database = null;
+            }
+        }
+    }
+
+    /**
+     * Apply security constraints from form to database.
+     *
+     * @return void
+     */
+    protected function applyFormSecurityConstraints(): void
+    {
+        if (!$this->database || !method_exists($this->form, 'getSecurityConstraints')) {
+            return;
+        }
+
+        $constraints = $this->form->getSecurityConstraints();
+        
+        if (is_array($constraints)) {
+            foreach ($constraints as $constraint) {
+                if (isset($constraint['column'], $constraint['operator'], $constraint['value'])) {
+                    $this->database->addSecurityConstraint(
+                        $constraint['column'],
+                        $constraint['operator'],
+                        $constraint['value']
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Validate that all fields are Field instances.
+     *
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    protected function validateFields(): void
+    {
+        foreach ($this->fields as $field) {
+            if (!$field instanceof Field) {
+                throw new InvalidArgumentException('All fields must be instances of Field class');
+            }
+        }
     }
 
     /**
@@ -145,6 +266,64 @@ class FormGenerator
     }
 
     /**
+     * Set form identifier key.
+     *
+     * @param string $identifier
+     * @return $this
+     */
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
+        return $this;
+    }
+
+    /**
+     * Enable/disable back button.
+     *
+     * @param bool $show
+     * @return $this
+     */
+    public function showBackButton(bool $show = true): self
+    {
+        $this->back_button = $show;
+        return $this;
+    }
+
+    /**
+     * Enable/disable save and stay button.
+     *
+     * @param bool $show
+     * @return $this
+     */
+    public function showSaveAndStayButton(bool $show = true): self
+    {
+        $this->save_and_stay_button = $show;
+        return $this;
+    }
+
+    /**
+     * Add custom values to the form.
+     *
+     * @param array $values
+     * @return $this
+     */
+    public function withValues(array $values): self
+    {
+        $this->values = array_merge($this->values, $values);
+        return $this;
+    }
+
+    /**
+     * Get the Database instance if available.
+     *
+     * @return Database|null
+     */
+    public function getDatabase(): ?Database
+    {
+        return $this->database;
+    }
+
+    /**
      * Get the form instance.
      *
      * @return HasForm
@@ -172,5 +351,65 @@ class FormGenerator
     public function getValues(): array
     {
         return $this->values;
+    }
+
+    /**
+     * Get the form ID.
+     *
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get form metadata.
+     *
+     * @return array
+     */
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /**
+     * Get validation rules.
+     *
+     * @return array
+     */
+    public function getValidationRules(): array
+    {
+        return $this->validation_rules;
+    }
+
+    /**
+     * Check if form has back button enabled.
+     *
+     * @return bool
+     */
+    public function hasBackButton(): bool
+    {
+        return $this->back_button;
+    }
+
+    /**
+     * Check if form has save and stay button enabled.
+     *
+     * @return bool
+     */
+    public function hasSaveAndStayButton(): bool
+    {
+        return $this->save_and_stay_button;
+    }
+
+    /**
+     * Get form links.
+     *
+     * @return array
+     */
+    public function getLinks(): array
+    {
+        return $this->links;
     }
 }

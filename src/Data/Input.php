@@ -47,7 +47,7 @@ trait Input
      *
      * @var string|null
      */
-    public ?string $class = null;
+    public ?string $input_class = null;
 
     /**
      * Hint text for the input.
@@ -162,7 +162,7 @@ trait Input
      */
     public function withClass(string $class): self
     {
-        $this->class = $class;
+        $this->input_class = $class;
         return $this;
     }
 

@@ -7,9 +7,13 @@ use RMS\Core\Contracts\Data\UseDatabase;
 use RMS\Core\Contracts\Filter\HasSort;
 use RMS\Core\Contracts\Filter\ShouldFilter;
 use RMS\Core\Contracts\List\HasList;
+use InvalidArgumentException;
 
 /**
- * Class ListGenerator
+ * Enhanced list generator with improved Database integration.
+ * 
+ * This class generates lists with full Database class support,
+ * providing fluent interfaces, advanced filtering, and performance optimizations.
  */
 class ListGenerator
 {
@@ -69,7 +73,7 @@ class ListGenerator
      *
      * @var HasList
      */
-    protected $list;
+    protected HasList $list;
 
     /**
      * Base route
@@ -100,9 +104,31 @@ class ListGenerator
     public bool $batch_active = false;
 
     /**
+     * Database instance for enhanced query building.
+     *
+     * @var Database|null
+     */
+    protected ?Database $database = null;
+
+    /**
+     * Applied search term.
+     *
+     * @var string|null
+     */
+    protected ?string $searchTerm = null;
+
+    /**
+     * Custom filters to apply.
+     *
+     * @var array
+     */
+    protected array $customFilters = [];
+
+    /**
      * ListGenerator constructor.
      *
      * @param HasList $list
+     * @throws InvalidArgumentException
      */
     public function __construct(HasList $list)
     {
@@ -110,37 +136,315 @@ class ListGenerator
         $this->route_parameter = $list->routeParameter();
         $this->base_route = $list->baseRoute();
         $this->fields = $list->getListFields();
+        
+        $this->validateFields();
+        $this->initializeDatabase();
     }
 
     /**
-     * Generate the list response.
+     * Static factory method for creating ListGenerator instances.
+     *
+     * @param HasList $list
+     * @return static
+     */
+    public static function make(HasList $list): static
+    {
+        return new static($list);
+    }
+
+    /**
+     * Initialize Database instance if list uses database.
+     *
+     * @return void
+     */
+    protected function initializeDatabase(): void
+    {
+        if ($this->list instanceof UseDatabase) {
+            try {
+                $tableName = $this->list->table();
+                $this->database = Database::make($this->fields, $tableName);
+                
+                // Apply security constraints if available
+                $this->applyListSecurityConstraints();
+                
+            } catch (\Exception $e) {
+                error_log('ListGenerator: Could not initialize Database - ' . $e->getMessage());
+                $this->database = null;
+            }
+        }
+    }
+
+    /**
+     * Apply security constraints from list to database.
+     *
+     * @return void
+     */
+    protected function applyListSecurityConstraints(): void
+    {
+        if (!$this->database || !method_exists($this->list, 'getSecurityConstraints')) {
+            return;
+        }
+
+        $constraints = $this->list->getSecurityConstraints();
+        
+        if (is_array($constraints)) {
+            foreach ($constraints as $constraint) {
+                if (isset($constraint['column'], $constraint['operator'], $constraint['value'])) {
+                    $this->database->addSecurityConstraint(
+                        $constraint['column'],
+                        $constraint['operator'],
+                        $constraint['value']
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Validate that all fields are Field instances.
+     *
+     * @return void
+     * @throws InvalidArgumentException
+     */
+    protected function validateFields(): void
+    {
+        foreach ($this->fields as $field) {
+            if (!$field instanceof Field) {
+                throw new InvalidArgumentException('All fields must be instances of Field class');
+            }
+        }
+    }
+
+    /**
+     * Generate the list response with enhanced functionality.
      *
      * @return ListResponse
+     * @throws \Exception
      */
     public function generate(): ListResponse
     {
-        if ($this->list instanceof UseDatabase) {
-            return new ListResponse($this->builder()->get($this->perPage(), $this->simple_pagination), $this, $this->fields);
+        if (!($this->list instanceof UseDatabase)) {
+            throw new \Exception('This class should implement: ' . UseDatabase::class);
         }
-        throw new \Exception('This class should implement: ' . UseDatabase::class);
+
+        $database = $this->buildQuery();
+        $data = $database->get($this->perPage(), $this->simple_pagination);
+        
+        return new ListResponse($data, $this, $this->fields);
     }
 
     /**
-     * Build the database query.
+     * Build the enhanced database query with all features.
+     *
+     * @return Database
+     */
+    protected function buildQuery(): Database
+    {
+        $database = $this->database ?: new Database($this->fields, $this->list->table());
+        
+        // Allow list to customize the raw query
+        if (method_exists($this->list, 'query')) {
+            $this->list->query($database->getQueryBuilder());
+        }
+        
+        // Apply filters from list
+        $this->applyListFilters($database);
+        
+        // Apply search if available
+        $this->applySearch($database);
+        
+        // Apply custom filters
+        $this->applyCustomFilters($database);
+        
+        // Apply sorting
+        $this->applySorting($database);
+        
+        return $database;
+    }
+
+    /**
+     * Apply filters from the list implementation.
+     *
+     * @param Database $database
+     * @return void
+     */
+    protected function applyListFilters(Database $database): void
+    {
+        if ($this->list instanceof ShouldFilter) {
+            $filters = $this->list->getFilters();
+            if (!empty($filters)) {
+                $database->withFilters($filters);
+            }
+        }
+    }
+
+    /**
+     * Apply search functionality if search term is set.
+     *
+     * @param Database $database
+     * @return void
+     */
+    protected function applySearch(Database $database): void
+    {
+        if ($this->searchTerm && method_exists($this->list, 'getSearchableColumns')) {
+            $searchableColumns = $this->list->getSearchableColumns();
+            if (!empty($searchableColumns)) {
+                $database->search($this->searchTerm, $searchableColumns);
+            }
+        }
+    }
+
+    /**
+     * Apply custom filters.
+     *
+     * @param Database $database
+     * @return void
+     */
+    protected function applyCustomFilters(Database $database): void
+    {
+        if (!empty($this->customFilters)) {
+            $database->withFilters($this->customFilters);
+        }
+    }
+
+    /**
+     * Apply sorting from the list.
+     *
+     * @param Database $database
+     * @return void
+     */
+    protected function applySorting(Database $database): void
+    {
+        if ($this->list instanceof HasSort && $orderBy = $this->list->orderBy()) {
+            $database->sort($orderBy, $this->list->orderWay());
+        }
+    }
+
+    /**
+     * Build the database query (legacy method for compatibility).
      *
      * @return Database
      */
     public function builder(): Database
     {
-        $database = new Database($this->fields, $this->list->table());
-        $this->list->query($database->sql);
-        if ($this->list instanceof ShouldFilter) {
-            $database->withFilters($this->list->getFilters());
+        return $this->buildQuery();
+    }
+
+    /**
+     * Set search term for the list.
+     *
+     * @param string $searchTerm
+     * @return $this
+     */
+    public function search(string $searchTerm): self
+    {
+        $this->searchTerm = trim($searchTerm);
+        return $this;
+    }
+
+    /**
+     * Add custom filter to the list.
+     *
+     * @param Column $filter
+     * @return $this
+     */
+    public function addFilter(Column $filter): self
+    {
+        $this->customFilters[] = $filter;
+        return $this;
+    }
+
+    /**
+     * Add multiple custom filters to the list.
+     *
+     * @param array $filters
+     * @return $this
+     */
+    public function addFilters(array $filters): self
+    {
+        foreach ($filters as $filter) {
+            if ($filter instanceof Column) {
+                $this->customFilters[] = $filter;
+            }
         }
-        if ($this->list instanceof HasSort && $column = $this->list->orderBy()) {
-            $database->sort($this->list->orderBy(), $this->list->orderWay());
+        return $this;
+    }
+
+    /**
+     * Set custom per page value.
+     *
+     * @param int $perPage
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    public function setPerPage(int $perPage): self
+    {
+        if ($perPage <= 0 || $perPage > 1000) {
+            throw new InvalidArgumentException('Per page must be between 1 and 1000');
         }
-        return $database;
+        
+        $this->per_page = $perPage;
+        return $this;
+    }
+
+    /**
+     * Enable/disable simple pagination.
+     *
+     * @param bool $simple
+     * @return $this
+     */
+    public function useSimplePagination(bool $simple = true): self
+    {
+        $this->simple_pagination = $simple;
+        return $this;
+    }
+
+    /**
+     * Enable/disable create button.
+     *
+     * @param bool $show
+     * @return $this
+     */
+    public function showCreateButton(bool $show = true): self
+    {
+        $this->create = $show;
+        return $this;
+    }
+
+    /**
+     * Enable/disable batch destroy.
+     *
+     * @param bool $enable
+     * @return $this
+     */
+    public function enableBatchDestroy(bool $enable = true): self
+    {
+        $this->batch_destroy = $enable;
+        return $this;
+    }
+
+    /**
+     * Enable/disable batch active.
+     *
+     * @param bool $enable
+     * @return $this
+     */
+    public function enableBatchActive(bool $enable = true): self
+    {
+        $this->batch_active = $enable;
+        return $this;
+    }
+
+    /**
+     * Set identifier key.
+     *
+     * @param string $identifier
+     * @return $this
+     */
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
+        return $this;
     }
 
     /**
@@ -167,5 +471,115 @@ class ListGenerator
     {
         $this->links[] = $link;
         return $this;
+    }
+
+    /**
+     * Get the Database instance if available.
+     *
+     * @return Database|null
+     */
+    public function getDatabase(): ?Database
+    {
+        return $this->database;
+    }
+
+    /**
+     * Get the list instance.
+     *
+     * @return HasList
+     */
+    public function getList(): HasList
+    {
+        return $this->list;
+    }
+
+    /**
+     * Get the fields array.
+     *
+     * @return array
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    /**
+     * Get current search term.
+     *
+     * @return string|null
+     */
+    public function getSearchTerm(): ?string
+    {
+        return $this->searchTerm;
+    }
+
+    /**
+     * Get custom filters.
+     *
+     * @return array
+     */
+    public function getCustomFilters(): array
+    {
+        return $this->customFilters;
+    }
+
+    /**
+     * Get base route.
+     *
+     * @return string
+     */
+    public function getBaseRoute(): string
+    {
+        return $this->base_route;
+    }
+
+    /**
+     * Get route parameter.
+     *
+     * @return string|null
+     */
+    public function getRouteParameter(): ?string
+    {
+        return $this->route_parameter;
+    }
+
+    /**
+     * Check if create button is enabled.
+     *
+     * @return bool
+     */
+    public function hasCreateButton(): bool
+    {
+        return $this->create;
+    }
+
+    /**
+     * Check if batch destroy is enabled.
+     *
+     * @return bool
+     */
+    public function hasBatchDestroy(): bool
+    {
+        return $this->batch_destroy;
+    }
+
+    /**
+     * Check if batch active is enabled.
+     *
+     * @return bool
+     */
+    public function hasBatchActive(): bool
+    {
+        return $this->batch_active;
+    }
+
+    /**
+     * Get links array.
+     *
+     * @return array
+     */
+    public function getLinks(): array
+    {
+        return $this->links;
     }
 }
