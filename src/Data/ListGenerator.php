@@ -228,7 +228,7 @@ class ListGenerator
         }
 
         $database = $this->buildQuery();
-        $data = $database->get($this->perPage(), $this->simple_pagination);
+        $data = $database->get($this->perPage(), 1);
         
         return new ListResponse($data, $this, $this->fields);
     }

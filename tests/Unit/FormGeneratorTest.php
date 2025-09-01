@@ -20,6 +20,26 @@ describe('FormGenerator Class', function () {
                     Field::make('email')->setDatabaseKey('email')
                 ];
             }
+            
+            public function formUrl(): string
+            {
+                return '/test/form';
+            }
+            
+            public function setTplForm(): void
+            {
+                // Mock implementation
+            }
+            
+            public function getValidationRules(): array
+            {
+                return ['name' => 'required', 'email' => 'email|required'];
+            }
+            
+            public function getFormConfig(): array
+            {
+                return ['method' => 'POST', 'enctype' => 'multipart/form-data'];
+            }
         };
 
         // Mock form with database support
@@ -32,15 +52,45 @@ describe('FormGenerator Class', function () {
                     Field::make('email')->setDatabaseKey('email')
                 ];
             }
+            
+            public function formUrl(): string
+            {
+                return '/test/database-form';
+            }
+            
+            public function setTplForm(): void
+            {
+                // Mock implementation
+            }
+            
+            public function getValidationRules(): array
+            {
+                return ['name' => 'required', 'email' => 'email|required'];
+            }
+            
+            public function getFormConfig(): array
+            {
+                return ['method' => 'POST', 'enctype' => 'application/x-www-form-urlencoded'];
+            }
 
-            public function getTable(): string
+            public function table(): string
             {
                 return 'users';
             }
+            
+            public function query($query): void
+            {
+                // Mock query modifications
+            }
 
-            public function model(int $id)
+            public function model($id = null)
             {
                 return (object) ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com'];
+            }
+            
+            public function modelName(): string
+            {
+                return 'App\\Models\\User';
             }
 
             public function getSecurityConstraints(): array
@@ -246,15 +296,45 @@ describe('FormGenerator Class', function () {
                 {
                     return [Field::make('id')];
                 }
+                
+                public function formUrl(): string
+                {
+                    return '/test/no-constraints';
+                }
+                
+                public function setTplForm(): void
+                {
+                    // Mock implementation
+                }
+                
+                public function getValidationRules(): array
+                {
+                    return [];
+                }
+                
+                public function getFormConfig(): array
+                {
+                    return ['method' => 'POST'];
+                }
 
-                public function getTable(): string
+                public function table(): string
                 {
                     return 'test_table';
                 }
-
-                public function model(int $id)
+                
+                public function query($query): void
                 {
-                    return null;
+                    // Mock implementation
+                }
+
+                public function model($id = null)
+                {
+                    return (object) ['id' => $id];
+                }
+                
+                public function modelName(): string
+                {
+                    return 'App\\Models\\Test';
                 }
             };
 
@@ -271,15 +351,45 @@ describe('FormGenerator Class', function () {
                 {
                     return [Field::make('id')];
                 }
+                
+                public function formUrl(): string
+                {
+                    return '/test/problematic';
+                }
+                
+                public function setTplForm(): void
+                {
+                    // Mock implementation
+                }
+                
+                public function getValidationRules(): array
+                {
+                    return [];
+                }
+                
+                public function getFormConfig(): array
+                {
+                    return ['method' => 'POST'];
+                }
 
-                public function getTable(): string
+                public function table(): string
                 {
                     throw new \Exception('Database error');
                 }
-
-                public function model(int $id)
+                
+                public function query($query): void
                 {
-                    return null;
+                    // Mock implementation
+                }
+
+                public function model($id = null)
+                {
+                    return (object) ['id' => $id];
+                }
+                
+                public function modelName(): string
+                {
+                    return 'App\\Models\\Test';
                 }
             };
 
@@ -294,15 +404,45 @@ describe('FormGenerator Class', function () {
                 {
                     return [Field::make('id')];
                 }
+                
+                public function formUrl(): string
+                {
+                    return '/test/loading-error';
+                }
+                
+                public function setTplForm(): void
+                {
+                    // Mock implementation
+                }
+                
+                public function getValidationRules(): array
+                {
+                    return [];
+                }
+                
+                public function getFormConfig(): array
+                {
+                    return ['method' => 'POST'];
+                }
 
-                public function getTable(): string
+                public function table(): string
                 {
                     return 'users';
                 }
+                
+                public function query($query): void
+                {
+                    // Mock implementation
+                }
 
-                public function model(int $id)
+                public function model($id = null)
                 {
                     throw new \Exception('Model loading error');
+                }
+                
+                public function modelName(): string
+                {
+                    return 'App\\Models\\User';
                 }
             };
 

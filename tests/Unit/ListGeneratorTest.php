@@ -38,6 +38,16 @@ describe('ListGenerator Class', function () {
             {
                 return 25;
             }
+            
+            public function setTplList(): void
+            {
+                // Mock implementation
+            }
+            
+            public function getListConfig(): array
+            {
+                return ['showPagination' => true, 'showSearch' => false];
+            }
         };
 
         // Mock list with database support
@@ -65,6 +75,16 @@ describe('ListGenerator Class', function () {
             {
                 return 25;
             }
+            
+            public function setTplList(): void
+            {
+                // Mock implementation
+            }
+            
+            public function getListConfig(): array
+            {
+                return ['showPagination' => true, 'showSearch' => true];
+            }
 
             public function table(): string
             {
@@ -74,6 +94,16 @@ describe('ListGenerator Class', function () {
             public function query($query): void
             {
                 // Custom query modifications
+            }
+            
+            public function model($id = null)
+            {
+                return (object) ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com'];
+            }
+            
+            public function modelName(): string
+            {
+                return 'App\\Models\\User';
             }
         };
 
@@ -102,6 +132,16 @@ describe('ListGenerator Class', function () {
             {
                 return 25;
             }
+            
+            public function setTplList(): void
+            {
+                // Mock implementation
+            }
+            
+            public function getListConfig(): array
+            {
+                return ['showPagination' => true, 'showSearch' => true, 'showFilters' => true];
+            }
 
             public function table(): string
             {
@@ -111,6 +151,16 @@ describe('ListGenerator Class', function () {
             public function query($query): void
             {
                 // Custom query modifications
+            }
+            
+            public function model($id = null)
+            {
+                return (object) ['id' => $id, 'name' => 'John Doe', 'email' => 'john@example.com'];
+            }
+            
+            public function modelName(): string
+            {
+                return 'App\\Models\\User';
             }
 
             public function getFilters(): array
@@ -173,6 +223,8 @@ describe('ListGenerator Class', function () {
                 public function routeParameter(): string { return 'test'; }
                 public function baseRoute(): string { return 'test'; }
                 public function getPerPage(): int { return 20; }
+                public function setTplList(): void { }
+                public function getListConfig(): array { return []; }
             };
 
             expect(function () {
@@ -400,8 +452,12 @@ describe('ListGenerator Class', function () {
                 public function routeParameter(): string { return 'test'; }
                 public function baseRoute(): string { return 'test'; }
                 public function getPerPage(): int { return 0; }
+                public function setTplList(): void { }
+                public function getListConfig(): array { return []; }
                 public function table(): string { return 'test'; }
                 public function query($query): void { }
+                public function model($id = null) { return (object) ['id' => $id]; }
+                public function modelName(): string { return 'App\\Models\\Test'; }
             };
 
             $generator = new ListGenerator($listWithZeroPerPage);
@@ -471,7 +527,11 @@ describe('ListGenerator Class', function () {
                 public function routeParameter(): string { return 'test'; }
                 public function baseRoute(): string { return 'test'; }
                 public function getPerPage(): int { return 20; }
+                public function setTplList(): void { }
+                public function getListConfig(): array { return []; }
                 public function query($query): void { }
+                public function model($id = null) { return (object) ['id' => $id]; }
+                public function modelName(): string { return 'App\\Models\\Test'; }
 
                 public function table(): string
                 {
@@ -510,6 +570,10 @@ describe('ListGenerator Class', function () {
                 public function routeParameter(): string { return 'test'; }
                 public function baseRoute(): string { return 'test'; }
                 public function getPerPage(): int { return 20; }
+                public function setTplList(): void { }
+                public function getListConfig(): array { return []; }
+                public function model($id = null) { return (object) ['id' => $id]; }
+                public function modelName(): string { return 'App\\Models\\Test'; }
                 public function table(): string { return 'test_table'; }
             };
 

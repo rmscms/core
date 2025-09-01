@@ -156,7 +156,16 @@ class FormGenerator
             
             // Fallback to model method
             $model = $this->form->model($this->id);
-            return $model ? $model->toArray() : [];
+            if (!$model) {
+                return [];
+            }
+            
+            // Handle both Eloquent models and plain objects
+            if (method_exists($model, 'toArray')) {
+                return $model->toArray();
+            }
+            
+            return (array) $model;
             
         } catch (\Exception $e) {
             // Log error and return empty array for graceful degradation
@@ -174,7 +183,7 @@ class FormGenerator
     {
         if ($this->form instanceof UseDatabase) {
             try {
-                $tableName = $this->form->getTable();
+                $tableName = $this->form->table();
                 $this->database = Database::make($this->fields, $tableName);
                 
                 // Apply any security constraints from the form
