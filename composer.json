@@ -1,0 +1,37 @@
+{
+    "name": "rmscms/core",
+    "description": "A Core cms package for Laravel applications",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "sharif",
+            "email": "msharif.ahrari@gmail.com"
+        }
+    ],
+    "require": {
+        "rmscms/helper": "^1.0",
+        "rmscms/telegram": "^1.0",
+        "rmscms/pdf": "^1.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RMS\\Core\\": "src/",
+            "RMS\\Core\\Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "src/Helpers.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RMS\\Core\\CoreServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

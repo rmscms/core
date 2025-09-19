@@ -1,0 +1,301 @@
+/* Enhanced Sidebar Styles - RMS Core Package */
+
+/* Resize indicator */
+.sidebar-resize-indicator {
+    position: absolute;
+    top: 50%;
+    right: -2px;
+    width: 4px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    cursor: col-resize;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.sidebar:hover .sidebar-resize-indicator {
+    opacity: 1;
+}
+
+.sidebar-resize-indicator:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+    margin-top: auto !important;
+    backdrop-filter: blur(10px);
+}
+
+.sidebar-footer .btn {
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.sidebar-footer .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+    .sidebar-resize-indicator {
+        display: none;
+    }
+    
+    .sidebar-footer .sidebar-resize-hide {
+        display: none;
+    }
+    
+    .sidebar-footer .btn {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Sidebar collapsed state */
+.sidebar-collapsed {
+    width: 60px !important;
+}
+
+.sidebar-collapsed .sidebar-resize-hide {
+    display: none;
+}
+
+.sidebar-collapsed .sidebar-resize-show {
+    display: inline-block;
+}
+
+/* Progress bars in sidebar */
+.sidebar .progress {
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 4px !important;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.sidebar .progress .progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Status indicator improvements */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: relative;
+    animation: statusBlink 2s infinite;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+.status-indicator.online {
+    background-color: #26a69a;
+    box-shadow: 0 0 6px rgba(38, 166, 154, 0.5);
+}
+
+.status-indicator.away {
+    background-color: #ffa726;
+    box-shadow: 0 0 6px rgba(255, 167, 38, 0.5);
+}
+
+.status-indicator.busy {
+    background-color: #ef5350;
+    box-shadow: 0 0 6px rgba(239, 83, 80, 0.5);
+}
+
+@keyframes statusBlink {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* Smooth transitions for nav links */
+.sidebar .nav-link {
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin: 1px 8px;
+    position: relative;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(2px);
+}
+
+.sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    box-shadow: inset 3px 0 0 #fff;
+}
+
+/* Quick stats styling */
+.sidebar .nav-item .nav-link.d-flex {
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin: 2px 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-item .nav-link.d-flex:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: none;
+}
+
+/* Badge improvements */
+.sidebar .nav-link .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+}
+
+/* System status widget */
+.sidebar .nav-item .nav-link .progress {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.sidebar .nav-item .nav-link .progress .progress-bar.bg-success {
+    background-color: #26a69a !important;
+}
+
+/* User profile enhancements */
+.sidebar-user-img {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+}
+
+.sidebar-user-img:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+/* RTL Support improvements */
+[dir="rtl"] .sidebar .nav-link {
+    text-align: right;
+}
+
+[dir="rtl"] .sidebar .nav-link:hover {
+    transform: translateX(-2px);
+}
+
+[dir="rtl"] .sidebar-resize-indicator {
+    left: -2px;
+    right: auto;
+}
+
+/* Navigation header improvements */
+.sidebar .nav-item-header {
+    padding: 0.75rem 1rem 0.25rem;
+    margin-top: 1rem;
+}
+
+.sidebar .nav-item-header:first-child {
+    margin-top: 0;
+}
+
+/* Submenu enhancements */
+.sidebar .nav-group-sub {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    margin: 2px 8px;
+    overflow: hidden;
+}
+
+.sidebar .nav-group-sub .nav-item .nav-link {
+    padding-right: 2.5rem;
+    font-size: 0.9rem;
+    margin: 1px 4px;
+}
+
+.sidebar .nav-group-sub .nav-item .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Animation for expanding menus */
+.sidebar .nav-group-sub.collapsing,
+.sidebar .nav-group-sub.show {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Icon improvements */
+.sidebar .nav-link i {
+    width: 20px;
+    text-align: center;
+    margin-left: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover i {
+    transform: scale(1.1);
+}
+
+/* Scrollbar styling for webkit browsers */
+.sidebar .sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar .sidebar-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.sidebar .sidebar-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar .sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Quick actions section styling */
+.sidebar .nav-item-header .ph-dots-three {
+    opacity: 0.5;
+    font-size: 1.2rem;
+}
+
+/* Enhanced responsive behavior */
+@media (max-width: 991px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.sidebar-mobile-expanded {
+        transform: translateX(0);
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1049;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+}

@@ -1,0 +1,351 @@
+/* SweetAlert2 for RMS with Limitless Theme Integration
+ * Based on Limitless Bootstrap 5 theme
+ * Version: 2.0.0
+ */
+
+/* SweetAlert2 container */
+.swal2-container {
+    --bs-swal-gutter-y: 1.25rem;
+    --bs-swal-gutter-x: 1.25rem;
+    --bs-swal-bg: var(--bs-body-bg);
+    --bs-swal-padding: 1.5rem;
+    --bs-swal-width: 32rem;
+    --bs-swal-max-width: calc(100% - 2 * var(--bs-swal-gutter-x));
+    --bs-swal-margin-x: auto;
+    --bs-swal-content-margin: 1rem 0;
+    --bs-swal-icon-border-width: 0.25rem;
+    --bs-swal-icon-size: 5rem;
+    --bs-swal-icon-spacer: 2rem;
+    --bs-swal-success-color: var(--bs-success);
+    --bs-swal-warning-color: var(--bs-warning);
+    --bs-swal-error-color: var(--bs-danger);
+    --bs-swal-info-color: var(--bs-info);
+    --bs-swal-question-color: var(--bs-primary);
+    --bs-swal-progress-height: 0.25rem;
+    --bs-swal-progress-color: var(--bs-primary);
+
+    display: grid;
+    grid-template-areas: 
+        'top-start     top            top-end'
+        'center-start  center         center-end'
+        'bottom-start  bottom-center  bottom-end';
+    grid-template-rows: minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    padding: var(--bs-swal-gutter-y) var(--bs-swal-gutter-x);
+    z-index: 1055; /* Bootstrap modal z-index */
+    transition: background-color ease-in-out 0.15s;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Dark theme support - Limitless pattern */
+[data-color-theme="dark"] .swal2-container,
+[data-bs-theme="dark"] .swal2-container {
+    --bs-swal-bg: var(--bs-dark);
+    --bs-swal-progress-color: var(--bs-primary);
+}
+
+/* Backdrop */
+.swal2-container.swal2-backdrop-show,
+.swal2-container.swal2-noanimation {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.swal2-container.swal2-backdrop-hide {
+    background-color: transparent !important;
+}
+
+/* Positioning */
+.swal2-container.swal2-center > .swal2-popup {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: center;
+    justify-self: center;
+}
+
+.swal2-container.swal2-top > .swal2-popup {
+    grid-column: 2;
+    align-self: start;
+    justify-self: center;
+}
+
+.swal2-container.swal2-bottom > .swal2-popup {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: center;
+    align-self: end;
+}
+
+/* Popup */
+.swal2-popup {
+    /* Light theme - پس‌زمینه سفید */
+    background-color: #ffffff;
+    color: #212529;
+    display: none;
+    position: relative;
+    max-width: 100%;
+    padding: var(--bs-swal-padding);
+    width: var(--bs-swal-width);
+    margin-left: var(--bs-swal-margin-x);
+    margin-right: var(--bs-swal-margin-x);
+    border-radius: var(--bs-border-radius, 0.375rem);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Dark theme - پس‌زمینه تیره (Limitless pattern) */
+[data-color-theme="dark"] .swal2-popup,
+[data-bs-theme="dark"] .swal2-popup {
+    background-color: #2d2f33; /* مطابق Limitless card-bg */
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
+}
+
+.swal2-popup:focus {
+    outline: none;
+}
+
+.swal2-popup.swal2-loading {
+    overflow-y: hidden;
+}
+
+/* Title */
+.swal2-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: center;
+    position: relative;
+    word-wrap: break-word;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    color: #212529; /* Light theme */
+}
+
+[data-color-theme="dark"] .swal2-title,
+[data-bs-theme="dark"] .swal2-title {
+    color: #ffffff; /* Dark theme */
+}
+
+/* Content */
+.swal2-html-container {
+    z-index: 1;
+    text-align: center;
+    position: relative;
+    word-wrap: break-word;
+    margin: var(--bs-swal-content-margin);
+    color: #6c757d; /* Light theme */
+}
+
+[data-color-theme="dark"] .swal2-html-container,
+[data-bs-theme="dark"] .swal2-html-container {
+    color: #9CA3AF; /* Dark theme - مطابق Limitless text-muted */
+}
+
+/* Footer */
+.swal2-footer {
+    justify-content: center;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.125); /* Light theme */
+}
+
+[data-color-theme="dark"] .swal2-footer,
+[data-bs-theme="dark"] .swal2-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.125); /* Dark theme */
+}
+
+/* Actions (buttons) */
+.swal2-actions {
+    display: flex;
+    z-index: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.swal2-actions > button + button {
+    margin-left: 0.5rem;
+}
+
+.swal2-actions:not(.swal2-loading) .swal2-styled[disabled] {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+/* Close button */
+.swal2-close {
+    background: transparent;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
+    color: #6c757d; /* Light theme */
+    line-height: 1;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    opacity: 0.5;
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: opacity ease-in-out 0.15s;
+}
+
+[data-color-theme="dark"] .swal2-close,
+[data-bs-theme="dark"] .swal2-close {
+    color: #9CA3AF; /* Dark theme - مطابق Limitless text-muted */
+}
+
+.swal2-close:hover,
+.swal2-close:focus {
+    opacity: 1;
+    outline: 0;
+}
+
+/* Progress bar */
+.swal2-timer-progress-bar {
+    width: 100%;
+    height: var(--bs-swal-progress-height);
+    background: var(--bs-swal-progress-color);
+}
+
+.swal2-timer-progress-bar-container {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    grid-column: auto !important;
+    overflow: hidden;
+    border-bottom-right-radius: var(--bs-border-radius-pill);
+    border-bottom-left-radius: var(--bs-border-radius-pill);
+}
+
+/* Icons */
+.swal2-icon {
+    width: var(--bs-swal-icon-size);
+    height: var(--bs-swal-icon-size);
+    margin: 0 auto var(--bs-swal-icon-spacer) auto;
+}
+
+.swal2-icon.swal2-success {
+    color: var(--bs-swal-success-color);
+}
+
+.swal2-icon.swal2-warning {
+    color: var(--bs-swal-warning-color);
+}
+
+.swal2-icon.swal2-error {
+    color: var(--bs-swal-error-color);
+}
+
+.swal2-icon.swal2-info {
+    color: var(--bs-swal-info-color);
+}
+
+.swal2-icon.swal2-question {
+    color: var(--bs-swal-question-color);
+}
+
+/* Toast positioning for RTL */
+.swal2-toast {
+    direction: rtl;
+}
+
+.swal2-toast .swal2-title,
+.swal2-toast .swal2-html-container {
+    text-align: right;
+}
+
+/* Form inputs */
+.swal2-input,
+.swal2-file,
+.swal2-textarea,
+.swal2-select {
+    display: none;
+    margin: 1rem auto 0 auto;
+}
+
+.swal2-input {
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.swal2-input:focus {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-primary);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Animations */
+.swal2-show {
+    animation: swal2-show 0.3s;
+}
+
+.swal2-hide {
+    animation: swal2-hide 0.15s forwards;
+}
+
+@keyframes swal2-show {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.05);
+        opacity: 0.7;
+    }
+    80% {
+        transform: scale(0.95);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes swal2-hide {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .swal2-container {
+        --bs-swal-gutter-x: 0.75rem;
+        --bs-swal-gutter-y: 0.75rem;
+        --bs-swal-width: calc(100% - 1.5rem);
+        --bs-swal-padding: 1rem;
+    }
+    
+    .swal2-popup {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}

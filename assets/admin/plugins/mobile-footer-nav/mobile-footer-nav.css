@@ -1,0 +1,331 @@
+/**
+ * RMS Mobile Footer Navigation Plugin Styles
+ * Compatible with Bootstrap 5 + Limitless Theme
+ * Version: 1.0.0
+ */
+
+/* Mobile Footer Navigation Base Styles */
+.mobile-footer-nav {
+    backdrop-filter: blur(20px);
+    background: rgba(var(--bs-body-bg-rgb), 0.95) !important;
+    border-top: 1px solid rgba(var(--bs-border-color-rgb), 0.2) !important;
+    z-index: 1030 !important;
+}
+
+/* Navigation Icon Styles */
+.mobile-footer-nav .nav-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.mobile-footer-nav .nav-item:hover .nav-icon-circle {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-footer-nav .nav-item:active .nav-icon-circle {
+    transform: scale(0.95);
+}
+
+/* Badge Positioning and Styling */
+.mobile-footer-nav .nav-icon-wrapper .badge {
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    padding: 0;
+    border: 2px solid var(--bs-body-bg);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Floating Menu Enhancements */
+.mobile-footer-nav .floating-item:hover .floating-icon {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-footer-nav .floating-icon {
+    transition: all 0.3s ease;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.mobile-footer-nav .floating-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--bs-body-color);
+}
+
+/* Add Button Enhancements */
+.mobile-footer-nav #addButton {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.mobile-footer-nav #addButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-footer-nav #addButton:active {
+    transform: scale(0.95);
+}
+
+/* Navigation Item Text */
+.mobile-footer-nav .nav-item .small {
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* Smooth Transitions for All Interactive Elements */
+.mobile-footer-nav .nav-item,
+.mobile-footer-nav .floating-item,
+.mobile-footer-nav #addButton {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+/* Dark Theme Support */
+[data-color-theme="dark"] .mobile-footer-nav,
+[data-bs-theme="dark"] .mobile-footer-nav {
+    background: rgba(45, 47, 51, 0.95) !important;
+    border-top-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-color-theme="dark"] .mobile-footer-nav .nav-icon-wrapper .badge,
+[data-bs-theme="dark"] .mobile-footer-nav .nav-icon-wrapper .badge {
+    border-color: #2d2f33;
+}
+
+/* RTL Support */
+[dir="rtl"] .mobile-footer-nav .floating-item {
+    direction: rtl;
+}
+
+[dir="rtl"] .mobile-footer-nav .floating-label {
+    text-align: right;
+}
+
+[dir="rtl"] .mobile-footer-nav .nav-icon-wrapper .badge {
+    right: auto;
+    left: 0;
+}
+
+/* Responsive Improvements */
+@media (max-width: 576px) {
+    .mobile-footer-nav .nav-icon-circle {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .mobile-footer-nav .nav-item .small {
+        font-size: 10px;
+    }
+    
+    .mobile-footer-nav #addButton {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .mobile-footer-nav .floating-icon {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .mobile-footer-nav .floating-label {
+        font-size: 10px;
+    }
+}
+
+/* Enhanced Focus States for Accessibility */
+.mobile-footer-nav .nav-item:focus,
+.mobile-footer-nav .floating-item:focus,
+.mobile-footer-nav #addButton:focus {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+/* Loading State for Dynamic Badges */
+.mobile-footer-nav .badge.loading {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: mobileNavShimmer 1.5s infinite;
+}
+
+@keyframes mobileNavShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Center Add Button Positioning */
+.mobile-footer-nav .center-add-btn {
+    z-index: 10;
+}
+
+.mobile-footer-nav .center-add-btn .floating-menu {
+    z-index: 9;
+}
+
+/* Better Tooltip Integration */
+.mobile-footer-nav-tooltip {
+    font-size: 12px;
+    font-weight: 500;
+    --bs-tooltip-bg: #343a40;
+    --bs-tooltip-color: #ffffff;
+    z-index: 1060 !important;
+}
+
+.mobile-footer-nav-tooltip .tooltip-inner {
+    background-color: var(--bs-tooltip-bg) !important;
+    color: var(--bs-tooltip-color) !important;
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+}
+
+.mobile-footer-nav-tooltip .tooltip-arrow::before {
+    border-color: var(--bs-tooltip-bg) transparent !important;
+}
+
+/* Dark Theme Tooltip Support */
+[data-color-theme="dark"] .mobile-footer-nav-tooltip,
+[data-bs-theme="dark"] .mobile-footer-nav-tooltip {
+    --bs-tooltip-bg: #1a1d23;
+    --bs-tooltip-color: #ffffff;
+}
+
+[data-color-theme="dark"] .mobile-footer-nav-tooltip .tooltip-inner,
+[data-bs-theme="dark"] .mobile-footer-nav-tooltip .tooltip-inner {
+    background-color: #1a1d23 !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-color-theme="dark"] .mobile-footer-nav-tooltip .tooltip-arrow::before,
+[data-bs-theme="dark"] .mobile-footer-nav-tooltip .tooltip-arrow::before {
+    border-color: #1a1d23 transparent !important;
+}
+
+/* Light Theme Tooltip */
+[data-color-theme="light"] .mobile-footer-nav-tooltip,
+[data-bs-theme="light"] .mobile-footer-nav-tooltip {
+    --bs-tooltip-bg: #343a40;
+    --bs-tooltip-color: #ffffff;
+}
+
+/* Auto-hide Animation */
+.mobile-footer-nav-tooltip {
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.95);
+}
+
+.mobile-footer-nav-tooltip.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Tooltip positioning improvements */
+.mobile-footer-nav-tooltip.bs-tooltip-top {
+    --bs-tooltip-arrow-border: var(--bs-tooltip-bg);
+}
+
+.mobile-footer-nav-tooltip.bs-tooltip-left {
+    --bs-tooltip-arrow-border: var(--bs-tooltip-bg);
+}
+
+/* Prevent Text Selection on Interactive Elements */
+.mobile-footer-nav * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Floating Menu Functionality */
+.mobile-footer-nav .floating-menu {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+}
+
+.mobile-footer-nav .floating-menu.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+/* Animation for floating menu items */
+.mobile-footer-nav .floating-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: scale(0.8) translateY(20px);
+    opacity: 0;
+}
+
+.mobile-footer-nav .floating-menu.show .floating-item {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+/* Staggered animation for menu items */
+.mobile-footer-nav .floating-menu.show .floating-item:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.mobile-footer-nav .floating-menu.show .floating-item:nth-child(2) {
+    transition-delay: 0.15s;
+}
+
+.mobile-footer-nav .floating-menu.show .floating-item:nth-child(3) {
+    transition-delay: 0.2s;
+}
+
+.mobile-footer-nav .floating-menu.show .floating-item:nth-child(4) {
+    transition-delay: 0.25s;
+}
+
+/* Add button active state */
+.mobile-footer-nav #addButton.active {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Add icon rotation */
+.mobile-footer-nav #addIcon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Floating label improvements */
+.mobile-footer-nav .floating-label {
+    margin-top: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Improve visual feedback on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .mobile-footer-nav .nav-item:active {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+        border-radius: 12px;
+    }
+    
+    .mobile-footer-nav .floating-item:active .floating-icon {
+        transform: scale(0.9);
+    }
+}

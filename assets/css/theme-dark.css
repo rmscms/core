@@ -1,0 +1,673 @@
+/* Dark Theme CSS - Based on Limitless Template Pattern */
+
+/* Root level variables for dark theme */
+[data-color-theme=dark],
+html[data-color-theme=dark] [data-color-theme] {
+    /* Color variables */
+    --body-bg: #202125;
+    --body-color: #fff;
+    --body-bg-rgb: 32, 33, 37;
+    --body-color-rgb: 255, 255, 255;
+    
+    /* Gray scale for dark theme */
+    --gray-100: #374151;
+    --gray-200: #4B5563;
+    --gray-300: #6B7280;
+    --gray-400: #9CA3AF;
+    --gray-500: #D1D5DB;
+    --gray-600: #E5E7EB;
+    --gray-700: #F3F4F6;
+    --gray-800: #F9FAFB;
+    --gray-900: #fff;
+    
+    /* Component colors */
+    --component-active-bg: #0c83ff;
+    --component-active-color: #fff;
+    
+    /* Border colors */
+    --border-color: #4B5563;
+    --border-color-translucent: rgba(255, 255, 255, 0.125);
+    
+    /* Background colors */
+    --light: #374151;
+    --dark: #F3F4F6;
+    
+    /* Specific component overrides */
+    --navbar-bg: #2d2f33;
+    --sidebar-bg: #252b36;
+    --card-bg: #2d2f33;
+    --dropdown-bg: #2d2f33;
+    --input-bg: #374151;
+    --table-bg: #2d2f33;
+    
+    /* Text colors */
+    --text-color: #fff;
+    --text-muted: #9CA3AF;
+    --text-white-75: rgba(255, 255, 255, 0.75);
+    --text-white-50: rgba(255, 255, 255, 0.5);
+    
+    /* Shadow adjustments */
+    --box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    --box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --box-shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.4);
+    
+    /* Link colors */
+    --link-color: #60a5fa;
+    --link-hover-color: #3b82f6;
+}
+
+/* Body and main containers */
+[data-color-theme=dark] body {
+    background-color: var(--body-bg);
+    color: var(--body-color);
+}
+
+/* Navbar dark theme */
+[data-color-theme=dark] .navbar {
+    background-color: var(--navbar-bg) !important;
+    border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .navbar .navbar-nav-link {
+    color: var(--text-white-75);
+}
+
+[data-color-theme=dark] .navbar .navbar-nav-link:hover {
+    color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar dark theme */
+[data-color-theme=dark] .sidebar {
+    background-color: var(--sidebar-bg) !important;
+    border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .sidebar .nav-link {
+    color: var(--text-white-75);
+}
+
+[data-color-theme=dark] .sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+[data-color-theme=dark] .sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-color);
+}
+
+[data-color-theme=dark] .sidebar .nav-item-header {
+    color: var(--text-white-50);
+}
+
+[data-color-theme=dark] .sidebar .nav-group-sub {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Cards and content */
+[data-color-theme=dark] .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+[data-color-theme=dark] .card-header {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: var(--border-color);
+}
+
+/* Dropdowns */
+[data-color-theme=dark] .dropdown-menu {
+    background-color: var(--dropdown-bg);
+    border-color: var(--border-color);
+    box-shadow: var(--box-shadow-lg);
+}
+
+[data-color-theme=dark] .dropdown-item {
+    color: var(--text-white-75);
+}
+
+[data-color-theme=dark] .dropdown-item:hover,
+[data-color-theme=dark] .dropdown-item:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+[data-color-theme=dark] .dropdown-header {
+    color: var(--text-white-50);
+}
+
+[data-color-theme=dark] .dropdown-divider {
+    border-color: var(--border-color);
+}
+
+/* Forms */
+[data-color-theme=dark] .form-control {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+[data-color-theme=dark] .form-control:focus {
+    background-color: var(--input-bg);
+    border-color: var(--primary);
+    color: var(--text-color);
+    box-shadow: 0 0 0 0.125rem rgba(12, 131, 255, 0.25);
+}
+
+[data-color-theme=dark] .form-control::placeholder {
+    color: var(--text-muted);
+}
+
+[data-color-theme=dark] .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+[data-color-theme=dark] .form-check-input {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Buttons */
+[data-color-theme=dark] .btn-light {
+    background-color: var(--gray-400);
+    border-color: var(--gray-400);
+    color: var(--body-bg);
+}
+
+[data-color-theme=dark] .btn-light:hover {
+    background-color: var(--gray-500);
+    border-color: var(--gray-500);
+}
+
+[data-color-theme=dark] .btn-outline-light {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .btn-outline-light:hover {
+    background-color: var(--text-color);
+    color: var(--body-bg);
+}
+
+/* Tables */
+[data-color-theme=dark] .table {
+    --bs-table-color: var(--text-color);
+    --bs-table-bg: var(--table-bg);
+    --bs-table-border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+[data-color-theme=dark] .table-hover > tbody > tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Text utilities */
+[data-color-theme=dark] .text-muted {
+    color: var(--text-muted) !important;
+}
+
+[data-color-theme=dark] .text-dark {
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .bg-light {
+    background-color: var(--gray-300) !important;
+}
+
+[data-color-theme=dark] .border {
+    border-color: var(--border-color) !important;
+}
+
+/* Badges */
+[data-color-theme=dark] .badge.bg-light {
+    background-color: var(--gray-400) !important;
+    color: var(--body-bg);
+}
+
+/* Alerts */
+[data-color-theme=dark] .alert-light {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Progress bars */
+[data-color-theme=dark] .progress {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Pagination - Enhanced for dark theme */
+[data-color-theme=dark] .pagination {
+    --bs-pagination-bg: var(--card-bg);
+    --bs-pagination-border-color: var(--border-color);
+    --bs-pagination-color: var(--text-white-75);
+    --bs-pagination-hover-bg: rgba(255, 255, 255, 0.1);
+    --bs-pagination-hover-color: var(--text-color);
+    --bs-pagination-hover-border-color: var(--border-color);
+    --bs-pagination-active-bg: #0c83ff;
+    --bs-pagination-active-border-color: #0c83ff;
+    --bs-pagination-active-color: #ffffff;
+    --bs-pagination-disabled-bg: var(--gray-300);
+    --bs-pagination-disabled-color: var(--text-muted);
+    --bs-pagination-disabled-border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .page-item .page-link {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-white-75) !important;
+}
+
+[data-color-theme=dark] .page-item .page-link:hover,
+[data-color-theme=dark] .page-item .page-link:focus {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 0 0 0.125rem rgba(12, 131, 255, 0.25);
+}
+
+[data-color-theme=dark] .page-item.active .page-link,
+[data-color-theme=dark] .page-item.active .page-link:hover,
+[data-color-theme=dark] .page-item.active .page-link:focus {
+    background-color: #0c83ff !important;
+    border-color: #0c83ff !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 0 0 0.125rem rgba(12, 131, 255, 0.25);
+}
+
+/* Make sure active state overrides other states */
+[data-color-theme=dark] .pagination .page-item.active > .page-link {
+    background-color: #0c83ff !important;
+    border-color: #0c83ff !important;
+    color: #ffffff !important;
+    z-index: 3;
+    position: relative;
+}
+
+[data-color-theme=dark] .page-item.disabled .page-link {
+    background-color: var(--gray-300) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+    opacity: 0.6;
+}
+
+/* Pagination size variants */
+[data-color-theme=dark] .pagination-sm .page-item .page-link,
+[data-color-theme=dark] .pagination-lg .page-item .page-link {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-white-75) !important;
+}
+
+/* Pagination info text */
+[data-color-theme=dark] .pagination-info,
+[data-color-theme=dark] .dataTables_info {
+    color: var(--text-white-75) !important;
+}
+
+/* Page size selector */
+[data-color-theme=dark] .dataTables_length select {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Modals */
+[data-color-theme=dark] .modal-content {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .modal-header {
+    border-color: var(--border-color);
+}
+
+[data-color-theme=dark] .modal-footer {
+    border-color: var(--border-color);
+}
+
+/* Offcanvas */
+[data-color-theme=dark] .offcanvas {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+/* Toasts */
+[data-color-theme=dark] .toast {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Scrollbars for dark theme */
+[data-color-theme=dark] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+[data-color-theme=dark] ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-color-theme=dark] ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+[data-color-theme=dark] ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Special theme-specific components */
+
+/* Search input in dark navbar */
+[data-color-theme=dark] .navbar .form-control-feedback-start .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-color-theme=dark] .navbar .form-control-feedback-start .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary);
+}
+
+/* Status indicators in dark theme */
+[data-color-theme=dark] .status-indicator {
+    box-shadow: 0 0 0 2px var(--navbar-bg);
+}
+
+/* Theme switcher specific styles */
+[data-color-theme=dark] .theme-icon {
+    color: var(--text-white-75);
+    transition: color 0.2s ease;
+}
+
+[data-color-theme=dark] .navbar-nav-link:hover .theme-icon {
+    color: var(--text-color);
+}
+
+/* Smooth transitions for theme changes */
+* {
+    transition: 
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* Prevent transition on page load */
+.no-transitions * {
+    transition: none !important;
+}
+
+/* Advanced Select (Choices.js) Dark Theme Support */
+[data-color-theme=dark] .choices {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .choices__inner {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .choices__list--dropdown {
+    background-color: var(--dropdown-bg) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: var(--box-shadow-lg) !important;
+}
+
+[data-color-theme=dark] .choices__item {
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .choices__item--selectable {
+    background-color: transparent !important;
+    color: var(--text-white-75) !important;
+}
+
+[data-color-theme=dark] .choices__item--selectable:hover,
+[data-color-theme=dark] .choices__item--selectable.is-highlighted {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .choices__item--choice {
+    color: var(--text-white-75) !important;
+}
+
+[data-color-theme=dark] .choices__item--choice:hover,
+[data-color-theme=dark] .choices__item--choice.is-highlighted {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .choices__placeholder {
+    color: var(--text-muted) !important;
+}
+
+[data-color-theme=dark] .choices__input {
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .choices__input::placeholder {
+    color: var(--text-muted) !important;
+}
+
+[data-color-theme=dark] .choices__button {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-white-75) !important;
+    border-left-color: var(--border-color) !important;
+}
+
+[data-color-theme=dark] .choices__button:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-color) !important;
+}
+
+/* Boolean Field Badges - Inactive/Active States */
+[data-color-theme=dark] .badge.bg-secondary {
+    background-color: #4B5563 !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .badge.bg-light {
+    background-color: #4B5563 !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .badge.bg-grey,
+[data-color-theme=dark] .badge.bg-gray {
+    background-color: #374151 !important;
+    color: var(--text-color) !important;
+}
+
+/* Inactive state badges - dark background with light text */
+[data-color-theme=dark] .badge.inactive-badge,
+[data-color-theme=dark] .badge[data-status="inactive"] {
+    background-color: #374151 !important;
+    color: var(--text-white-75) !important;
+    border: 1px solid var(--border-color);
+}
+
+/* Active state badges - keep success color but adjust for dark theme */
+[data-color-theme=dark] .badge.active-badge,
+[data-color-theme=dark] .badge[data-status="active"] {
+    background-color: #059669 !important;
+    color: white !important;
+}
+
+/* Persian DatePicker Icon Dark Theme Support */
+[data-color-theme=dark] .persian-datepicker-icon,
+[data-color-theme=dark] .form-control-feedback-icon {
+    color: var(--text-white-75) !important;
+}
+
+[data-color-theme=dark] .form-control-feedback-icon i {
+    color: var(--text-white-75) !important;
+}
+
+/* DatePicker input wrapper */
+[data-color-theme=dark] .form-control-feedback {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-color-theme=dark] .form-control-feedback .form-control {
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .form-control-feedback .form-control:focus {
+    background-color: transparent !important;
+    border-color: var(--primary) !important;
+    color: var(--text-color) !important;
+}
+
+/* Persian DatePicker Calendar Popup */
+[data-color-theme=dark] .pwt-datepicker-view-year,
+[data-color-theme=dark] .pwt-datepicker-view-month,
+[data-color-theme=dark] .pwt-datepicker-view-day {
+    background-color: var(--dropdown-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .pwt-datepicker-days-name,
+[data-color-theme=dark] .pwt-datepicker-month-name {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-white-75) !important;
+}
+
+[data-color-theme=dark] .pwt-datepicker-day {
+    color: var(--text-white-75) !important;
+}
+
+[data-color-theme=dark] .pwt-datepicker-day:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-color) !important;
+}
+
+[data-color-theme=dark] .pwt-datepicker-day-selected {
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+[data-color-theme=dark] .pwt-datepicker-day-today {
+    background-color: rgba(12, 131, 255, 0.2) !important;
+    color: var(--primary) !important;
+}
+
+/* Status badges improvements for better dark theme visibility */
+[data-color-theme=dark] .badge.bg-secondary.bg-opacity-10 {
+    background-color: rgba(75, 85, 99, 0.3) !important;
+    color: #D1D5DB !important;
+}
+
+[data-color-theme=dark] .badge.bg-success.bg-opacity-10 {
+    background-color: rgba(5, 150, 105, 0.3) !important;
+    color: #10B981 !important;
+}
+
+[data-color-theme=dark] .badge.bg-danger.bg-opacity-10 {
+    background-color: rgba(239, 68, 68, 0.3) !important;
+    color: #F87171 !important;
+}
+
+[data-color-theme=dark] .badge.bg-warning.bg-opacity-10 {
+    background-color: rgba(245, 134, 70, 0.3) !important;
+    color: #FBBF24 !important;
+}
+
+[data-color-theme=dark] .badge.bg-primary.bg-opacity-10 {
+    background-color: rgba(12, 131, 255, 0.3) !important;
+    color: #60A5FA !important;
+}
+
+/* Filter section improvements */
+[data-color-theme=dark] .filter-section,
+[data-color-theme=dark] .card-body {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* Enhanced support for form validation feedback in dark mode */
+[data-color-theme=dark] .invalid-feedback {
+    color: #F87171 !important;
+}
+
+[data-color-theme=dark] .valid-feedback {
+    color: #10B981 !important;
+}
+
+[data-color-theme=dark] .form-control.is-invalid {
+    border-color: #EF4444 !important;
+}
+
+[data-color-theme=dark] .form-control.is-valid {
+    border-color: #059669 !important;
+}
+
+/* Boolean field icons in list - inactive state */
+[data-color-theme=dark] .ph-x.text-muted {
+    color: var(--text-color) !important;
+    background-color: #374151 !important;
+    border-radius: 50%;
+    padding: 0.25rem;
+}
+
+/* General fix for text-muted in dark theme */
+[data-color-theme=dark] .text-muted {
+    color: var(--text-white-75) !important;
+}
+
+/* Boolean field icons - specific improvements */
+[data-color-theme=dark] i.ph-x,
+[data-color-theme=dark] i.ph-check {
+    color: var(--text-color) !important;
+}
+
+/* Inactive boolean field styling */
+[data-color-theme=dark] .ph-x.text-muted,
+[data-color-theme=dark] i.ph-x.text-muted {
+    background-color: #374151 !important;
+    color: var(--text-color) !important;
+    border-radius: 50%;
+    padding: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Active boolean field styling */
+[data-color-theme=dark] .ph-check.text-success,
+[data-color-theme=dark] i.ph-check.text-success {
+    background-color: #059669 !important;
+    color: white !important;
+    border-radius: 50%;
+    padding: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+}

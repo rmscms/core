@@ -1,0 +1,128 @@
+/*!
+ * Persian DatePicker Plugin CSS
+ * Compatible with Bootstrap 5 & RMS Core
+ * Based on babakhani/pwt.datepicker
+ */
+
+/* Import main Persian DatePicker styles */
+@import url('https://unpkg.com/persian-datepicker@latest/dist/css/persian-datepicker.min.css');
+
+/* Bootstrap 5 Integration Fixes */
+.pwt-datepicker {
+    font-family: 'IRANSans', 'Tahoma', sans-serif;
+    z-index: 1060; /* Above Bootstrap modals */
+}
+
+/* RTL Support Enhancement */
+.pwt-datepicker.rtl {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Custom styling for RMS theme */
+.pwt-datepicker .pwt-datepicker-head {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.pwt-datepicker .pwt-datepicker-head .pwt-btn {
+    color: white;
+    border: none;
+    background: transparent;
+}
+
+.pwt-datepicker .pwt-datepicker-head .pwt-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+/* Day cells styling */
+.pwt-datepicker .pwt-datepicker-days td {
+    padding: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pwt-datepicker .pwt-datepicker-days td:hover {
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.pwt-datepicker .pwt-datepicker-days td.pwt-selected {
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+}
+
+.pwt-datepicker .pwt-datepicker-days td.pwt-today {
+    background: #28a745;
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Input field styling integration */
+.form-control.persian-datepicker {
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16"><path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/><path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: left 12px center;
+    background-size: 16px 16px;
+    padding-left: 40px;
+}
+
+/* Animation for calendar show/hide */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.pwt-datepicker {
+    animation: fadeInUp 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pwt-datepicker {
+        width: 100% !important;
+        max-width: 320px;
+    }
+    
+    .pwt-datepicker .pwt-datepicker-days td {
+        padding: 6px;
+        font-size: 14px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .pwt-datepicker {
+        background: #2d3748;
+        color: #e2e8f0;
+        border-color: #4a5568;
+    }
+    
+    .pwt-datepicker .pwt-datepicker-days td:hover {
+        background: #4a5568;
+    }
+}
+
+/* Fix for Bootstrap 5 form validation states */
+.was-validated .form-control.persian-datepicker:valid,
+.form-control.persian-datepicker.is-valid {
+    border-color: #198754;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16"><path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/><path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>');
+}
+
+.was-validated .form-control.persian-datepicker:invalid,
+.form-control.persian-datepicker.is-invalid {
+    border-color: #dc3545;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16"><path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/><path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>');
+}
