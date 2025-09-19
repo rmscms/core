@@ -2,10 +2,10 @@
 @section('content')
 
 <div class="d-flex flex-column" style="min-height: 100vh;">
-    
+
     {{-- Form Statistics Section --}}
     @include('cms::admin.form.form-stats')
-    
+
     <!-- Dynamic Form Card -->
     <div class="card mb-4">
         <div class="card-header">
@@ -13,7 +13,7 @@
         </div>
 
         <div class="card-body">
-            
+
             {{-- Display Validation Errors --}}
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -27,17 +27,17 @@
             @endif
 
             {{-- Dynamic Form --}}
-            <form action="{{ $form_url }}" method="POST" 
-                  class="{{ $form_config['class'] ?? 'form-horizontal' }}" 
+            <form action="{{ $form_url }}" method="POST"
+                  class="{{ $form_config['class'] ?? 'form-horizontal' }}"
                   @if(isset($form_config['enctype'])) enctype="{{ $form_config['enctype'] }}" @endif
                   @if(isset($form_config['autocomplete'])) autocomplete="{{ $form_config['autocomplete'] }}" @endif>
-                
+
                 @csrf
                 {{-- Auto-detect PUT method: if URL contains a number at the end, it's edit mode --}}
                 @if(preg_match('/\/\d+$/', $form_url))
                     @method('PUT')
                 @endif
-                
+
                 {{-- Dynamic Fields Generation --}}
                 @foreach($fields as $field)
                     <div class="row mb-3">
@@ -48,15 +48,15 @@
                             @endif
                         </label>
                         <div class="col-lg-9">
-                            
+
                             {{-- Generate Field Based on Type --}}
                             @switch($field->type)
-                                
+
                                 {{-- STRING Input --}}
                                 @case(\RMS\Core\Data\Field::STRING)
-                                    <input type="text" 
-                                           name="{{ $field->key }}" 
-                                           class="form-control @error($field->key) is-invalid @enderror" 
+                                    <input type="text"
+                                           name="{{ $field->key }}"
+                                           class="form-control @error($field->key) is-invalid @enderror"
                                            placeholder="{{ $field->placeholder ?? '' }}"
                                            value="{{ old($field->key, $form_values[$field->key] ?? $field->default_value) }}"
                                            @if($field->required) required @endif
@@ -66,9 +66,9 @@
 
                                 {{-- PASSWORD Input --}}
                                 @case(\RMS\Core\Data\Field::PASSWORD)
-                                    <input type="password" 
-                                           name="{{ $field->key }}" 
-                                           class="form-control @error($field->key) is-invalid @enderror" 
+                                    <input type="password"
+                                           name="{{ $field->key }}"
+                                           class="form-control @error($field->key) is-invalid @enderror"
                                            placeholder="{{ $field->placeholder ?? '' }}"
                                            @if($field->required) required @endif
                                            @if($field->disabled) disabled @endif>
@@ -78,15 +78,15 @@
                                 @case(\RMS\Core\Data\Field::SELECT)
                                     @php
                                         $selectedValue = old($field->key, $form_values[$field->key] ?? $field->default_value);
-                                        
+
                                         // Determine select classes
                                         $selectClasses = 'form-select @error($field->key) is-invalid @enderror';
-                                        
+
                                         // Check if this select needs advanced functionality
                                         if (isset($field->advanced) && $field->advanced === true) {
                                             $selectClasses .= ' enhanced-select';
                                         }
-                                        
+
                                         // Data attributes for enhanced select
                                         $dataAttributes = '';
                                         if (isset($field->advanced) && $field->advanced === true) {
@@ -104,7 +104,7 @@
                                             }
                                         }
                                     @endphp
-                                    <select name="{{ $field->key }}" 
+                                    <select name="{{ $field->key }}"
                                             class="{{ $selectClasses }}"
                                             @if($field->required) required @endif
                                             @if($field->disabled) disabled @endif
@@ -118,7 +118,7 @@
                                                     // Convert both values to string for comparison
                                                     $isSelected = (string)$selectedValue === (string)$optionValue;
                                                 @endphp
-                                                <option value="{{ $optionValue }}" 
+                                                <option value="{{ $optionValue }}"
                                                     @if($isSelected) selected @endif>
                                                     {{ $optionLabel }}
                                                 </option>
@@ -132,10 +132,10 @@
                                     @if($field->options)
                                         @foreach($field->options as $value => $label)
                                             <div class="form-check">
-                                                <input class="form-check-input @error($field->key) is-invalid @enderror" 
-                                                       type="radio" 
-                                                       name="{{ $field->key }}" 
-                                                       value="{{ $value }}" 
+                                                <input class="form-check-input @error($field->key) is-invalid @enderror"
+                                                       type="radio"
+                                                       name="{{ $field->key }}"
+                                                       value="{{ $value }}"
                                                        id="{{ $field->key }}_{{ $value }}"
                                                        @if(old($field->key, $form_values[$field->key] ?? $field->default_value) == $value) checked @endif
                                                        @if($field->disabled) disabled @endif>
@@ -146,10 +146,10 @@
                                         @endforeach
                                     @else
                                         <div class="form-check">
-                                            <input class="form-check-input @error($field->key) is-invalid @enderror" 
-                                                   type="checkbox" 
-                                                   name="{{ $field->key }}" 
-                                                   value="1" 
+                                            <input class="form-check-input @error($field->key) is-invalid @enderror"
+                                                   type="checkbox"
+                                                   name="{{ $field->key }}"
+                                                   value="1"
                                                    id="{{ $field->key }}"
                                                    @if(old($field->key, $form_values[$field->key] ?? $field->default_value)) checked @endif
                                                    @if($field->disabled) disabled @endif>
@@ -162,8 +162,8 @@
 
                                 {{-- FILE Input --}}
                                 @case(\RMS\Core\Data\Field::FILE)
-                                    <input type="file" 
-                                           name="{{ $field->key }}" 
+                                    <input type="file"
+                                           name="{{ $field->key }}"
                                            class="form-control @error($field->key) is-invalid @enderror"
                                            @if($field->required) required @endif
                                            @if($field->disabled) disabled @endif
@@ -175,7 +175,7 @@
                                     @php
                                         $imageInputClass = 'image-uploader';
                                         $imageInputAttributes = '';
-                                        
+
                                         // Build data attributes from field attributes
                                         foreach ($field->attributes as $attr => $value) {
                                             if (str_starts_with($attr, 'data-')) {
@@ -186,7 +186,7 @@
                                                 $imageInputAttributes .= ' multiple';
                                             }
                                         }
-                                        
+
                                         // Default attributes if not set
                                         if (!isset($field->attributes['accept'])) {
                                             $imageInputAttributes .= ' accept=".jpg,.jpeg,.png,.gif,.webp"';
@@ -201,10 +201,10 @@
                                             $imageInputAttributes .= ' data-drag-drop="true"';
                                         }
                                     @endphp
-                                    
+
                                     <div class="{{ $imageInputClass }}">
-                                        <input type="file" 
-                                               name="{{ $field->key }}" 
+                                        <input type="file"
+                                               name="{{ $field->key }}"
                                                class="form-control @error($field->key) is-invalid @enderror"
                                                @if($field->required) required @endif
                                                @if($field->disabled) disabled @endif
@@ -219,8 +219,8 @@
                                         // Determine rows from attributes or field properties
                                         $rows = $field->attributes['rows'] ?? ($field->large_size ? 8 : 4);
                                     @endphp
-                                    <textarea name="{{ $field->key }}" 
-                                              class="form-control @error($field->key) is-invalid @enderror" 
+                                    <textarea name="{{ $field->key }}"
+                                              class="form-control @error($field->key) is-invalid @enderror"
                                               rows="{{ $rows }}"
                                               placeholder="{{ $field->placeholder ?? '' }}"
                                               @if($field->required) required @endif
@@ -236,8 +236,8 @@
                                             $dateClasses .= ' ' . $field->attributes['class'];
                                         }
                                     @endphp
-                                    <input type="text" 
-                                           name="{{ $field->key }}" 
+                                    <input type="text"
+                                           name="{{ $field->key }}"
                                            class="{{ $dateClasses }}"
                                            placeholder="{{ $field->placeholder ?? 'YYYY/MM/DD' }}"
                                            value="{{ old($field->key, $form_values[$field->key] ?? $field->default_value) }}"
@@ -250,13 +250,13 @@
                                 {{-- DATETIME Input --}}
                                 @case(\RMS\Core\Data\Field::DATE_TIME)
                                     @php
-                                        $datetimeClasses = 'form-control persian-datepicker @error($field->key) is-invalid @enderror';
+                                        $datetimeClasses = 'form-control persian-datepicker ';
                                         if ($field->attributes && isset($field->attributes['class'])) {
                                             $datetimeClasses .= ' ' . $field->attributes['class'];
                                         }
                                     @endphp
-                                    <input type="text" 
-                                           name="{{ $field->key }}" 
+                                    <input type="text"
+                                           name="{{ $field->key }}"
                                            class="{{ $datetimeClasses }}"
                                            placeholder="{{ $field->placeholder ?? 'YYYY/MM/DD HH:mm' }}"
                                            value="{{ old($field->key, $form_values[$field->key] ?? $field->default_value) }}"
@@ -270,9 +270,9 @@
                                 {{-- NUMBER Input --}}
                                 @case(\RMS\Core\Data\Field::NUMBER)
                                 @case(\RMS\Core\Data\Field::INTEGER)
-                                    <input type="number" 
-                                           name="{{ $field->key }}" 
-                                           class="form-control @error($field->key) is-invalid @enderror" 
+                                    <input type="number"
+                                           name="{{ $field->key }}"
+                                           class="form-control @error($field->key) is-invalid @enderror"
                                            placeholder="{{ $field->placeholder ?? '' }}"
                                            value="{{ old($field->key, $form_values[$field->key] ?? $field->default_value) }}"
                                            @if($field->required) required @endif
@@ -282,33 +282,33 @@
 
                                 {{-- HIDDEN Input --}}
                                 @case(\RMS\Core\Data\Field::HIDDEN)
-                                    <input type="hidden" 
-                                           name="{{ $field->key }}" 
+                                    <input type="hidden"
+                                           name="{{ $field->key }}"
                                            value="{{ old($field->key, $form_values[$field->key] ?? $field->default_value) }}">
                                 @break
 
                                 {{-- DEFAULT: Text Input --}}
                                 @default
-                                    <input type="text" 
-                                           name="{{ $field->key }}" 
-                                           class="form-control @error($field->key) is-invalid @enderror" 
+                                    <input type="text"
+                                           name="{{ $field->key }}"
+                                           class="form-control @error($field->key) is-invalid @enderror"
                                            placeholder="{{ $field->placeholder ?? '' }}"
                                            value="{{ old($field->key, $form_values[$field->key] ?? $field->default_value) }}"
                                            @if($field->required) required @endif
                                            @if($field->disabled) disabled @endif
                                            @if($field->readonly) readonly @endif>
                             @endswitch
-                            
+
                             {{-- Field Hint --}}
                             @if($field->hint)
                                 <div class="form-text">{{ $field->hint }}</div>
                             @endif
-                            
+
                             {{-- Validation Error --}}
                             @error($field->key)
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            
+
                         </div>
                     </div>
                 @endforeach
@@ -321,7 +321,7 @@
                             <i class="ph-paper-plane-tilt me-2"></i>
                             {{ isset($form_values) && !empty($form_values) ? 'به‌روزرسانی' : 'ذخیره' }}
                         </button>
-                        
+
                         {{-- Stay in Form Button --}}
                         @if(isset($form_config['show_stay_button']) && $form_config['show_stay_button'])
                             <button type="submit" name="stay_in_form" value="1" class="btn btn-success ms-2">
@@ -329,7 +329,7 @@
                                 {{ isset($form_values) && !empty($form_values) ? 'به‌روزرسانی و ماندن' : 'ذخیره و ماندن' }}
                             </button>
                         @endif
-                        
+
                         <a href="{{ url()->previous() }}" class="btn btn-light ms-2">
                             <i class="ph-arrow-left me-2"></i>
                             بازگشت
@@ -378,7 +378,7 @@
         flex: 0 0 100%;
         max-width: 100%;
     }
-    
+
     .row .col-lg-9.offset-lg-3 {
         margin-right: 0;
     }
@@ -391,7 +391,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Form validation and interaction scripts
     console.log('Dynamic form loaded successfully');
-    
+
     // Auto-focus first input
     const firstInput = document.querySelector('.form-control:not([readonly]):not([disabled])');
     if (firstInput) {

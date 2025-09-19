@@ -343,6 +343,24 @@ class RouteHelper
 
         if ($options['toggle_active']) {
             static::toggleField($controller, $route, 'active');
+            
+            // Auto-register toggle routes for all boolean fields if controller implements ChangeBoolField
+            $controllerClass = is_array($controller) ? $controller[0] : $controller;
+            if (is_string($controllerClass) && class_exists($controllerClass)) {
+                $reflection = new \ReflectionClass($controllerClass);
+                if ($reflection->implementsInterface(\RMS\Core\Contracts\Actions\ChangeBoolField::class)) {
+                    // Get boolean fields from controller
+                    $tempController = app($controllerClass);
+                    if (method_exists($tempController, 'boolFields')) {
+                        $boolFields = $tempController->boolFields();
+                        foreach ($boolFields as $field) {
+                            if ($field !== 'active') { // Skip 'active' as it's already registered
+                                static::toggleField($controller, $route, $field);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         if (!empty($options['batch_actions'])) {

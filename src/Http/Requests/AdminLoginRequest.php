@@ -15,6 +15,16 @@ class AdminLoginRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'remember' => $this->boolean('remember'),
+        ]);
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      */
     public function rules(): array

@@ -40,6 +40,7 @@ class InstallCommand extends Command
         'publishFrontAssets' => 'انتشار فایل‌های فرانت',
         'publishAdminViews' => 'انتشار قالب‌های ادمین',
         'publishTranslations' => 'انتشار فایل‌های ترجمه',
+        'createStorageLink' => 'ایجاد لینک فایل‌ها',
         'runMigrations' => 'اجرای migration ها',
         'runSeeder' => 'ایجاد داده‌های پایه'
     ];
@@ -156,6 +157,21 @@ class InstallCommand extends Command
             return ['step' => 'Publish Translations', 'status' => true, 'message' => 'Published to resources/lang'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Translations', 'status' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Create storage link for file access.
+     *
+     * @return array
+     */
+    protected function createStorageLink(): array
+    {
+        try {
+            Artisan::call('storage:link');
+            return ['step' => 'Create Storage Link', 'status' => true, 'message' => 'Created symbolic link for storage'];
+        } catch (\Exception $e) {
+            return ['step' => 'Create Storage Link', 'status' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -344,10 +360,14 @@ class InstallCommand extends Command
         $this->line('   <fg=red;options=bold>⚠️  Please change the default password after login!</>');
         
         $this->newLine();
-        $this->info('📘 Next steps:');
-        $this->line('   1. Configure your application in <fg=yellow>config/cms.php</>');
-        $this->line('   2. Customize the admin theme in <fg=yellow>public/' . config('cms.admin_theme', 'admin') . '</>');
-        $this->line('   3. Start building your modules and content types');
+        $this->info('📘 Important Configuration Notes:');
+        $this->line('   1. <fg=cyan>Set locale to Persian:</> Add <fg=yellow>"locale" => "fa"</> to your <fg=yellow>.env</> file');
+        $this->line('   2. <fg=cyan>For local development:</> Set <fg=yellow>APP_URL=http://127.0.0.1:8000</> in your <fg=yellow>.env</> file');
+        $this->line('   3. Configure your application in <fg=yellow>config/cms.php</>');
+        $this->line('   4. Customize the admin theme in <fg=yellow>public/' . config('cms.admin_theme', 'admin') . '</>');
+        $this->line('   5. Start building your modules and content types');
+        $this->newLine();
+        $this->warn('🔍 Note: These settings ensure Persian interface and proper image loading in local environment.');
         $this->newLine();
     }
 }

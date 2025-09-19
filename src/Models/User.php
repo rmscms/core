@@ -4,20 +4,19 @@ namespace RMS\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
-class Admin extends Authenticatable
+class User extends Authenticatable
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'admins';
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -27,15 +26,13 @@ class Admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'mobile',
         'password',
-        'role',
+        'group_id',
         'active',
-        'last_login_at',
-        'last_login_ip',
-        'two_factor_enabled',
-        'two_factor_secret',
+        'email_notifications',
+        'birth_date',
         'avatar',
+        'email_verified_at',
     ];
 
     /**
@@ -46,7 +43,6 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_secret',
     ];
 
     /**
@@ -56,26 +52,17 @@ class Admin extends Authenticatable
      */
     protected $casts = [
         'active' => 'boolean',
-        'two_factor_enabled' => 'boolean',
-        'last_login_at' => 'datetime',
+        'email_notifications' => 'boolean',
+        'birth_date' => 'date',
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
 
     /**
-     * Hash password when it's set.
-     *
-     * @param string $value
-     */
-    public function setPasswordAttribute(string $value): void
-    {
-        $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
-    }
-
-    /**
-     * Check if admin is active.
+     * Check if user is active.
      *
      * @return bool
      */
@@ -85,37 +72,7 @@ class Admin extends Authenticatable
     }
 
     /**
-     * Check if admin has two-factor authentication enabled.
-     *
-     * @return bool
-     */
-    public function hasTwoFactorEnabled(): bool
-    {
-        return $this->two_factor_enabled === true && !empty($this->two_factor_secret);
-    }
-
-    /**
-     * Get the admin's last login time formatted.
-     *
-     * @return string|null
-     */
-    public function getLastLoginFormatted(): ?string
-    {
-        return $this->last_login_at ? $this->last_login_at->diffForHumans() : null;
-    }
-
-    /**
-     * Get the admin's display name.
-     *
-     * @return string
-     */
-    public function getDisplayName(): string
-    {
-        return $this->name ?: $this->email;
-    }
-
-    /**
-     * Get the admin's avatar URL.
+     * Get the user's avatar URL.
      *
      * @param int $size
      * @return string
@@ -133,7 +90,7 @@ class Admin extends Authenticatable
     }
 
     /**
-     * Scope to get only active admins.
+     * Scope to get only active users.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
@@ -144,36 +101,15 @@ class Admin extends Authenticatable
     }
 
     /**
-     * Scope to get admins by role.
+     * Scope to get users by group.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $role
+     * @param int $groupId
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeByRole($query, string $role)
+    public function scopeByGroup($query, int $groupId)
     {
-        return $query->where('role', $role);
-    }
-
-    /**
-     * Check if admin has specific role.
-     *
-     * @param string $role
-     * @return bool
-     */
-    public function hasRole(string $role): bool
-    {
-        return $this->role === $role;
-    }
-
-    /**
-     * Check if admin is super admin.
-     *
-     * @return bool
-     */
-    public function isSuperAdmin(): bool
-    {
-        return $this->hasRole('super_admin');
+        return $query->where('group_id', $groupId);
     }
 
     /**

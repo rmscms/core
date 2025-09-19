@@ -18,6 +18,7 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id()->comment('Primary key');
+            $table->string('avatar')->nullable()->comment('Admin profile picture path');
             $table->string('name')->comment('Admin full name');
             $table->string('email')->unique()->comment('Unique email address');
             $table->string('mobile')->unique()->comment('Unique mobile number');
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->string('two_factor_secret')->nullable()->comment('Two-factor secret key');
             $table->rememberToken()->comment('Remember me token');
             $table->timestamps();
+            $table->softDeletes()->comment('Soft delete timestamp');
         });
     }
 

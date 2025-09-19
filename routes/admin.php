@@ -81,6 +81,23 @@ Route::middleware(['web', 'throttle:60,1'])
             
             Route::resource('admins', \RMS\Core\Controllers\Admin\AdminsController::class);
             
+            // Users Management Routes - User Management System 👥
+            RouteHelper::adminResource(
+                \RMS\Core\Controllers\Admin\UsersController::class,
+                'users',
+                [
+                    'export' => true,
+                    'sort' => true,
+                    'filter' => true,
+                    'toggle_active' => true,
+                    'batch_actions' => ['delete', 'activate', 'deactivate'],
+                    'ajax_files' => ['avatar'],
+                    'image_viewer' => true,
+                ]
+            );
+            
+            Route::resource('users', \RMS\Core\Controllers\Admin\UsersController::class);
+            
             // Settings Management Routes - Simple Key-Value Settings ⚙️
             Route::resource('settings', \RMS\Core\Controllers\Admin\SettingsController::class);
             

@@ -308,31 +308,6 @@ class AdminsController extends AdminController implements
                     0 => 'غیرفعال'
                 ])
                 ->withDefaultValue(1),
-
-            Field::make('timezone', 'timezone')->withTitle('منطقه زمانی')
-                ->type(Field::SELECT)
-                ->setOptions([
-                    '' => 'انتخاب منطقه زمانی',
-                    'Asia/Tehran' => 'تهران (ایران)',
-                    'UTC' => 'UTC',
-                    'Asia/Dubai' => 'دبی',
-                    'Europe/London' => 'لندن'
-                ])
-                ->withDefaultValue('Asia/Tehran')
-                ->advanced()
-                ->optional(),
-
-            Field::make('locale', 'locale')->withTitle('زبان')
-                ->type(Field::SELECT)
-                ->setOptions([
-                    '' => 'انتخاب زبان',
-                    'fa' => 'فارسی',
-                    'en' => 'انگلیسی',
-                    'ar' => 'عربی'
-                ])
-                ->withDefaultValue('fa')
-                ->advanced()
-                ->optional(),
         ];
     }
 
@@ -350,8 +325,6 @@ class AdminsController extends AdminController implements
             'password' => 'required|min:8|confirmed',
             'role' => 'required|in:super_admin,admin,moderator,editor',
             'active' => 'boolean',
-            'timezone' => 'nullable|string',
-            'locale' => 'nullable|string|in:fa,en,ar',
             // ✅ avatar به عنوان virtual field در نظر گرفته می‌شود
             'avatar' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:2048', // 2MB max - virtual field
         ];
