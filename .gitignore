@@ -1,1 +1,54 @@
-/vendor
+# Composer dependencies
+/vendor/
+composer.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+logs/
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Cache
+.cache/
+*.cache
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+/build/
+/dist/
+/public/build/
+
+# Node modules (if any)
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+/coverage/
+.phpunit.result.cache
+
+# Temporary files
+*.tmp
+*.temp
