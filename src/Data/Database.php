@@ -128,11 +128,17 @@ class Database
      *
      * @param int $perPage
      * @param int $page
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param bool $simple Use simple pagination (for better performance with large datasets)
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Contracts\Pagination\Paginator
      */
-    public function get(int $perPage = 15, int $page = 1)
+    public function get(int $perPage = 15, int $page = 1, bool $simple = false)
     {
         $this->validatePagination($page, $perPage);
+        
+        if ($simple) {
+            return $this->sql->simplePaginate($perPage, ['*'], 'page', $page);
+        }
+        
         return $this->sql->paginate($perPage, ['*'], 'page', $page);
     }
 
@@ -246,6 +252,20 @@ class Database
     public function first(): ?object
     {
         return $this->sql->first();
+    }
+
+    /**
+     * Get simple paginated results without counting total rows.
+     * Best for performance with large datasets.
+     *
+     * @param int $perPage
+     * @param int $page
+     * @return \Illuminate\Contracts\Pagination\Paginator
+     */
+    public function getSimple(int $perPage = 15, int $page = 1)
+    {
+        $this->validatePagination($page, $perPage);
+        return $this->sql->simplePaginate($perPage, ['*'], 'page', $page);
     }
 
     /**

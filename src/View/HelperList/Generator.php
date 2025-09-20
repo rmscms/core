@@ -136,7 +136,7 @@ class Generator
             $database = $this->builder();
 
             // Get paginated results
-            $paginatedData = $database->get($this->perPage(), (int) $currentPage);
+            $paginatedData = $database->get($this->perPage(), (int) $currentPage, $this->simple_pagination);
 
             // Create list response with enhanced metadata
             $response = new ListResponse($paginatedData, $this, $this->fields);
