@@ -80,7 +80,7 @@
                                         $selectedValue = old($field->key, $form_values[$field->key] ?? $field->default_value);
 
                                         // Determine select classes
-                                        $selectClasses = 'form-select @error($field->key) is-invalid @enderror';
+                                        $selectClasses = 'form-select';
 
                                         // Check if this select needs advanced functionality
                                         if (isset($field->advanced) && $field->advanced === true) {

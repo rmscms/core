@@ -13,114 +13,26 @@ namespace RMS\Core\Traits\View;
 trait CustomPluginLoader
 {
     /**
-     * Plugin configurations registry.
+     * Plugin configurations registry (loaded from config).
      */
-    protected array $customPluginConfigs = [
-        'persian-datepicker' => [
-            'css' => [
-                'persian-datepicker.css',
-                'pwt.datepicker.min.css'
-            ],
-            'js' => [
-                'jalaali.js',                    // Jalaali library for leap year fix (must be first)
-                'persian-date.min.js',           // Persian date library
-                'pwt.datepicker.min.js',         // DatePicker plugin
-                'persian-datepicker-simple.js'   // Our custom initialization
-            ],
-            'dependencies' => ['jquery'],
-            'load_order' => 1  // Load early
-        ],
-        // Future plugins can be added here
-        'persian-number-input' => [
-            'css' => ['persian-number.css'],
-            'js' => ['persian-number.js'],
-            'dependencies' => ['jquery']
-        ],
-        'jalali-moment' => [
-            'js' => ['moment-jalaali.min.js', 'jalali-moment-init.js'],
-            'dependencies' => ['moment']
-        ],
-        'advanced-select' => [
-            'css' => [
-                'choices.min.css',                  // Base Choices.js styles
-                'choices-bootstrap5.css'            // Bootstrap 5 integration styles
-            ],
-            'js' => [
-                'choices.min.js',                   // Choices.js library
-                'enhanced-select-init.js'           // Our custom initialization
-            ],
-            'dependencies' => [], // No dependencies - vanilla JS
-            'load_order' => 3,  // Load after core plugins
-            'plugin_path' => 'choices'              // ← Actual plugin directory name
-        ],
-        'amount-formatter' => [
-            'css' => [
-                'amount-formatter.css'              // Amount field styling
-            ],
-            'js' => [
-                'amount-formatter.js'               // Amount field formatting logic
-            ],
-            'dependencies' => [], // No dependencies - vanilla JS
-            'load_order' => 2,  // Load early for form fields
-            'plugin_path' => 'amount-formatter'     // Plugin directory name
-        ],
-        'image-uploader' => [
-            'css' => [
-                'image-uploader.css'                // Image uploader styling with dark theme support
-            ],
-            'js' => [
-                'image-uploader.js'                 // Professional image upload with preview & validation
-            ],
-            'dependencies' => [], // No dependencies - vanilla JS with Bootstrap 5
-            'load_order' => 3,  // Load after core plugins but before advanced-select
-            'plugin_path' => 'image-uploader'       // Plugin directory name (will use admin/js & admin/css directly)
-        ],
-        'sweetalert2' => [
-            'css' => [
-                'sweetalert2.css'                   // SweetAlert2 styles for Limitless theme with dark mode
-            ],
-            'js' => [
-                'sweet_alert.min.js',               // SweetAlert2 library from Limitless
-                'rms-sweetalert-new.js'             // RMS wrapper for SweetAlert2 with Limitless integration
-            ],
-            'dependencies' => [], // No dependencies - vanilla JS
-            'load_order' => 1,  // Load very early (before other plugins might need it)
-            'plugin_path' => 'sweetalert2'          // Plugin directory name
-        ],
-        'avatar-viewer' => [
-            'css' => [
-                'avatar-viewer.css'                 // Avatar thumbnail styles with hover effects
-            ],
-            'js' => [
-                'avatar-viewer.js'                  // Avatar modal viewer with AJAX support
-            ],
-            'dependencies' => [], // No dependencies - uses SweetAlert2 which loads first
-            'load_order' => 5,  // Load after SweetAlert2 and other core plugins
-            'plugin_path' => 'avatar-viewer'        // Plugin directory name
-        ],
-        'sidebar-mobile' => [
-            'css' => [
-                'sidebar-mobile.css'                // Sidebar mobile fix styles with responsive design
-            ],
-            'js' => [
-                'sidebar-mobile.js'                 // Sidebar mobile functionality for toggle & backdrop
-            ],
-            'dependencies' => [], // No dependencies - vanilla JS with DOM API
-            'load_order' => 1,  // Load early (layout-critical plugin)
-            'plugin_path' => 'sidebar-mobile'       // Plugin directory name
-        ],
-        'mobile-footer-nav' => [
-            'css' => [
-                'mobile-footer-nav.css'             // Mobile footer navigation styles with Bootstrap 5 integration
-            ],
-            'js' => [
-                'mobile-footer-nav.js'              // Mobile footer nav with tooltips, animations & badge management
-            ],
-            'dependencies' => [], // No dependencies - works with Bootstrap 5 (already loaded)
-            'load_order' => 2,  // Load after core layout plugins
-            'plugin_path' => 'mobile-footer-nav'    // Plugin directory name
-        ]
-    ];
+    protected ?array $customPluginConfigs = null;
+
+    /**
+     * Load plugin configurations from config file.
+     *
+     * @return void
+     */
+    protected function loadPluginConfigs(): void
+    {
+        if ($this->customPluginConfigs === null) {
+            $this->customPluginConfigs = config('plugins', []);
+            
+            // Filter out disabled plugins
+            $this->customPluginConfigs = array_filter($this->customPluginConfigs, function($config) {
+                return ($config['enabled'] ?? true) === true;
+            });
+        }
+    }
 
     /**
      * Check if a plugin has custom configuration.
@@ -130,6 +42,7 @@ trait CustomPluginLoader
      */
     protected function hasCustomPluginConfig(string $plugin): bool
     {
+        $this->loadPluginConfigs();
         return isset($this->customPluginConfigs[$plugin]);
     }
 
@@ -203,6 +116,7 @@ trait CustomPluginLoader
      */
     public function getCustomPluginConfig(string $plugin): ?array
     {
+        $this->loadPluginConfigs();
         return $this->customPluginConfigs[$plugin] ?? null;
     }
 
@@ -213,6 +127,7 @@ trait CustomPluginLoader
      */
     public function getRegisteredCustomPlugins(): array
     {
+        $this->loadPluginConfigs();
         return array_keys($this->customPluginConfigs);
     }
 

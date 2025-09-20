@@ -19,6 +19,10 @@ class CoreServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/cms.php' => config_path('cms.php'),
         ], 'cms-config');
+        
+        $this->publishes([
+            __DIR__.'/../config/plugins.php' => config_path('plugins.php'),
+        ], 'cms-plugins-config');
 
         $this->publishes([
             __DIR__.'/../assets/' => public_path(config('cms.admin_theme')),
