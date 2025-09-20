@@ -145,13 +145,16 @@ class ListResponse
             ? $this->feature->getFieldsForBlade() 
             : $this->fields;
 
+        // Detect if we're using simple pagination
+        $isSimplePagination = !method_exists($this->rows, 'total');
+        
         return [
             'rows' => $this->rows,
             'pagination' => [
                 'current_page' => $this->rows->currentPage(),
-                'last_page' => method_exists($this->rows, 'lastPage') ? $this->rows->lastPage() : 1,
+                'last_page' => $isSimplePagination ? null : $this->rows->lastPage(),
                 'per_page' => $this->rows->perPage(),
-                'total' => method_exists($this->rows, 'total') ? $this->rows->total() : $this->rows->count(),
+                'total' => $isSimplePagination ? null : $this->rows->total(),
                 'from' => method_exists($this->rows, 'firstItem') ? $this->rows->firstItem() : 1,
                 'to' => method_exists($this->rows, 'lastItem') ? $this->rows->lastItem() : $this->rows->count(),
                 'has_more_pages' => $this->rows->hasMorePages(),

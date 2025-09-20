@@ -47,9 +47,13 @@
                 <h6 class="mb-0">{{ $title ?? 'فهرست داده‌ها' }}</h6>
 
                 <div class="d-flex align-items-center gap-2">
-                    @if($listData['pagination']['total'] ?? 0)
+                    @if(isset($listData['pagination']['total']) && $listData['pagination']['total'] !== null && $listData['pagination']['total'] > 0)
                         <div class="table-list-stat-cont">
                             <div class="table-list-stat-label">{{ number_format($listData['pagination']['total']) }} تعداد</div>
+                        </div>
+                    @elseif(isset($listData['config']['simple_pagination']) && $listData['config']['simple_pagination'])
+                        <div class="table-list-stat-cont">
+                            <div class="table-list-stat-label">صفحه {{ $listData['pagination']['current_page'] ?? 1 }}</div>
                         </div>
                     @endif
 
@@ -320,75 +324,94 @@
                         <div class="d-flex align-items-center gap-3 flex-wrap">
                             {{-- Pagination Info --}}
                             <div class="text-muted">
-                                نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }} از {{ number_format($listData['pagination']['total'] ?? 0) }} مورد
+                                @if(isset($listData['pagination']['total']) && $listData['pagination']['total'] !== null)
+                                    {{-- Regular pagination with total count --}}
+                                    نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }} از {{ number_format($listData['pagination']['total']) }} مورد
+                                @else
+                                    {{-- Simple pagination without total count --}}
+                                    نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }} 
+                                    (صفحه {{ $listData['pagination']['current_page'] ?? 1 }})
+                                @endif
                             </div>
 
                             {{-- Pagination Links --}}
-                            @if(($listData['pagination']['last_page'] ?? 1) > 1)
+                            @php
+                                $hasLastPage = isset($listData['pagination']['last_page']) && $listData['pagination']['last_page'] !== null;
+                                $isSimplePagination = !$hasLastPage;
+                            @endphp
+                            
+                            @if($isSimplePagination || ($listData['pagination']['last_page'] ?? 1) > 1)
                                 <nav aria-label="صفحه‌بندی">
                                     <ul class="pagination pagination-sm mb-0">
                                         {{-- Previous Page --}}
                                         @if($listData['pagination']['current_page'] > 1)
                                             <li class="page-item">
                                                 <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $listData['pagination']['current_page'] - 1]) }}">
-                                                    <i class="ph-caret-left"></i>
+                                                    <i class="ph-caret-left"></i> قبلی
                                                 </a>
                                             </li>
                                         @else
                                             <li class="page-item disabled">
                                                 <span class="page-link">
-                                                    <i class="ph-caret-left"></i>
+                                                    <i class="ph-caret-left"></i> قبلی
                                                 </span>
                                             </li>
                                         @endif
 
-                                        {{-- Page Numbers --}}
-                                        @php
-                                            $currentPage = $listData['pagination']['current_page'] ?? 1;
-                                            $lastPage = $listData['pagination']['last_page'] ?? 1;
-                                            $startPage = max(1, $currentPage - 2);
-                                            $endPage = min($lastPage, $currentPage + 2);
-                                        @endphp
-
-                                        @if($startPage > 1)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => 1]) }}">1</a>
+                                        @if($isSimplePagination)
+                                            {{-- Simple pagination: only show current page --}}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ $listData['pagination']['current_page'] ?? 1 }}</span>
                                             </li>
-                                            @if($startPage > 2)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
+                                        @else
+                                            {{-- Regular pagination: show page numbers --}}
+                                            @php
+                                                $currentPage = $listData['pagination']['current_page'] ?? 1;
+                                                $lastPage = $listData['pagination']['last_page'] ?? 1;
+                                                $startPage = max(1, $currentPage - 2);
+                                                $endPage = min($lastPage, $currentPage + 2);
+                                            @endphp
+
+                                            @if($startPage > 1)
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => 1]) }}">1</a>
+                                                </li>
+                                                @if($startPage > 2)
+                                                    <li class="page-item disabled">
+                                                        <span class="page-link">...</span>
+                                                    </li>
+                                                @endif
+                                            @endif
+
+                                            @for($i = $startPage; $i <= $endPage; $i++)
+                                                <li class="page-item {{ $i === $currentPage ? 'active' : '' }}">
+                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
+                                                </li>
+                                            @endfor
+
+                                            @if($endPage < $lastPage)
+                                                @if($endPage < $lastPage - 1)
+                                                    <li class="page-item disabled">
+                                                        <span class="page-link">...</span>
+                                                    </li>
+                                                @endif
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}">{{ $lastPage }}</a>
                                                 </li>
                                             @endif
-                                        @endif
-
-                                        @for($i = $startPage; $i <= $endPage; $i++)
-                                            <li class="page-item {{ $i === $currentPage ? 'active' : '' }}">
-                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
-                                            </li>
-                                        @endfor
-
-                                        @if($endPage < $lastPage)
-                                            @if($endPage < $lastPage - 1)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
-                                                </li>
-                                            @endif
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}">{{ $lastPage }}</a>
-                                            </li>
                                         @endif
 
                                         {{-- Next Page --}}
-                                        @if($currentPage < $lastPage)
+                                        @if($listData['pagination']['has_more_pages'] ?? false)
                                             <li class="page-item">
-                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $currentPage + 1]) }}">
-                                                    <i class="ph-caret-right"></i>
+                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => ($listData['pagination']['current_page'] ?? 1) + 1]) }}">
+                                                    بعدی <i class="ph-caret-right"></i>
                                                 </a>
                                             </li>
                                         @else
                                             <li class="page-item disabled">
                                                 <span class="page-link">
-                                                    <i class="ph-caret-right"></i>
+                                                    بعدی <i class="ph-caret-right"></i>
                                                 </span>
                                             </li>
                                         @endif
