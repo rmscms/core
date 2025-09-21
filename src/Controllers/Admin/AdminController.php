@@ -14,8 +14,8 @@ use RMS\Core\Contracts\Data\UseDatabase;
 abstract class AdminController extends Controller implements UseDatabase
 {
     use AuthorizesRequests, ValidatesRequests, FormAndList {
-        // Resolve trait collision: use Laravel's authorize method instead of RequestFormHelper's
-        AuthorizesRequests::authorize insteadof FormAndList;
+        // Resolve trait collision: rename FormAndList's authorize to avoid conflict
+        FormAndList::authorize as authorizeFormRequest;
     }
 
     public $admin;

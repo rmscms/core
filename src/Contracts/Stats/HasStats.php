@@ -17,12 +17,4 @@ interface HasStats
      * @return StatCard[] Array of StatCard instances
      */
     public function getStats(?Builder $query = null): array;
-
-    /**
-     * Get a summary of statistics.
-     * 
-     * @param Builder|null $query Optional query builder with applied filters
-     * @return array Raw summary data for API/calculations
-     */
-    public function getStatSummary(?Builder $query = null): array;
 }
