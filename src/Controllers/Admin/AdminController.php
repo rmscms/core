@@ -13,10 +13,7 @@ use RMS\Core\Contracts\Data\UseDatabase;
 
 abstract class AdminController extends Controller implements UseDatabase
 {
-    use AuthorizesRequests, ValidatesRequests, FormAndList {
-        // Resolve trait collision: rename FormAndList's authorize to avoid conflict
-        FormAndList::authorize as authorizeFormRequest;
-    }
+    use AuthorizesRequests, ValidatesRequests, FormAndList;
 
     public $admin;
 
@@ -164,7 +161,7 @@ abstract class AdminController extends Controller implements UseDatabase
      * @param \Illuminate\Http\Request $request
      * @return bool
      */
-    public function authorize(\Illuminate\Http\Request $request): bool
+    public function authorizeRequest(\Illuminate\Http\Request $request): bool
     {
         // Default: allow all authenticated admin users
         return auth('admin')->check();

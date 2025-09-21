@@ -89,7 +89,7 @@ trait RequestFormHelper
      * @param Request $request
      * @return bool
      */
-    public function authorize(Request $request): bool
+    public function authorizeRequest(Request $request): bool
     {
         return true; // Default: allow all requests
     }

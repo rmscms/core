@@ -44,5 +44,5 @@ interface RequestForm
      * @param Request $request
      * @return bool
      */
-    public function authorize(Request $request): bool;
+    public function authorizeRequest(Request $request): bool;
 }

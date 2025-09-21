@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.5] - 2025-01-21
+
+### 🔧 Fixed
+- **Complete Authorization Fix**: Permanently resolved authorize() method collision
+  - Renamed `RequestForm::authorize()` to `RequestForm::authorizeRequest()`
+  - Eliminated all trait collision complications
+  - Laravel's `authorize()` for policies now works without any conflicts
+  - Clean, maintainable solution without trait aliases or workarounds
+
+### 🏗️ Technical Improvements
+- Removed complex trait collision handling
+- Simplified AdminController architecture
+- Better separation of concerns between policy and form authorization
+- Enhanced IDE support with no more signature warnings
+
+---
+
 ## [1.0.4] - 2025-01-21
 
 ### 🔧 Fixed
