@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.6] - 2025-01-22
+
+### 🚀 Added
+- **Template Namespace Management System**: Advanced template rendering control
+  - Added `use_package_namespace` property to GenerateForm trait for template system control
+  - New `useCoreTemplates()` method - enables core template usage with package namespace
+  - New `useUserTemplates()` method - enables user custom template usage without namespace
+  - Enhanced AdminController to use core templates by default with proper namespace resolution
+  - Controllers can now easily switch between core and custom templates
+
+### 🎨 Enhanced
+- **Template Resolution System**: Flexible template path management
+  - Core templates: `cms::admin.form.index` (with package namespace)
+  - User templates: `admin.form.index` (without package namespace)
+  - Automatic template path resolution based on namespace setting
+  - Enhanced ViewTemplateManager with comprehensive path building logic
+
+### 🔧 Fixed
+- **Form Generation Pipeline**: Proper template setup in CRUD operations
+  - Fixed create/edit methods to properly call setTplForm() for template setup
+  - Resolved template resolution conflicts in form generation
+  - Enhanced template path resolution with namespace support
+  - Improved error handling for missing templates
+
+### 🏗️ Technical Improvements
+- Backward compatible implementation - no breaking changes
+- Enhanced flexibility for template customization
+- Better separation of core vs user template management
+- Improved developer experience with clear template switching methods
+
+---
+
 ## [1.0.5] - 2025-01-21
 
 ### 🔧 Fixed
