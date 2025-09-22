@@ -11,7 +11,7 @@ use RMS\Core\Data\FormGenerator as Generator;
 
 /**
  * Trait for generating and managing forms.
- * 
+ *
  * @package RMS\Core\Traits\Form
  */
 trait GenerateForm
@@ -32,6 +32,13 @@ trait GenerateForm
     protected bool $show_stay_button = true;
 
     /**
+     * Use package namespace for template rendering.
+     * Default: false (user templates)
+     * Set to true when using core templates
+     */
+    protected bool $use_package_namespace = false;
+
+    /**
      * Generate form view with specified configuration.
      *
      * @param int|string|null $id
@@ -44,7 +51,8 @@ trait GenerateForm
         int|string|null $id = null,
         ?array $fields = null,
         array $options = [],
-        bool $renderHtml = false
+        bool $renderHtml = false,
+        ?bool $usePackageNamespace = null
     ) {
         $generator = new Generator($this, $id, $fields ?: []);
 
@@ -58,18 +66,18 @@ trait GenerateForm
         // Get the model instance before generating FormResponse (for HasFormStats)
         $model = null;
         $isEditMode = $id !== null;
-        
+
         if ($this instanceof \RMS\Core\Contracts\Stats\HasFormStats && $isEditMode) {
             // Get model using the form's model() method
             $model = $this->model($id);
         }
-        
+
         $generated = $generator->generate();
         $this->transformFormResponse($generated);
 
         // Get form stats if controller supports HasFormStats
         $formStatsData = null;
-        
+
         if ($this instanceof \RMS\Core\Contracts\Stats\HasFormStats) {
             $formStatsData = $this->getFormStats($model, $isEditMode);
         }
@@ -86,7 +94,7 @@ trait GenerateForm
             'is_edit_mode' => $isEditMode,
             'model' => $model
         ];
-        
+
         // Call hook to allow controller to modify template data before sending to blade
         $this->beforeSendToTemplate($templateData, $generated);
 
@@ -99,7 +107,10 @@ trait GenerateForm
             $this->view->setTpl($this->getFormTemplate());
         }
 
-        return $this->view->render();
+        // Use parameter if provided, otherwise use controller property
+        $useNamespace = $usePackageNamespace ?? $this->use_package_namespace;
+        
+        return $this->view->render($useNamespace);
     }
 
     /**
@@ -125,7 +136,7 @@ trait GenerateForm
     {
         // Override in child classes
     }
-    
+
     /**
      * Hook called before sending template data to blade view.
      * Override this method to modify template data before rendering.
@@ -174,12 +185,12 @@ trait GenerateForm
         // Auto-detect create vs edit mode from route parameters
         $routeParameter = $this->routeParameter();
         $paramValue = request()->route($routeParameter);
-        
+
         if ($paramValue !== null) {
             // Edit mode - has route parameter (user, post, etc.)
             return route($this->prefix_route . $this->baseRoute() . '.update', $paramValue);
         }
-        
+
         // Create mode - no route parameter
         return route($this->prefix_route . $this->baseRoute() . '.store');
     }
@@ -209,6 +220,40 @@ trait GenerateForm
     }
 
     /**
+     * Set whether to use package namespace for templates.
+     *
+     * @param bool $usePackageNamespace
+     * @return $this
+     */
+    public function setUsePackageNamespace(bool $usePackageNamespace): self
+    {
+        $this->use_package_namespace = $usePackageNamespace;
+        return $this;
+    }
+
+    /**
+     * Use core templates (enables package namespace).
+     *
+     * @return $this
+     */
+    public function useCoreTemplates(): self
+    {
+        $this->use_package_namespace = true;
+        return $this;
+    }
+
+    /**
+     * Use user templates (disables package namespace).
+     *
+     * @return $this
+     */
+    public function useUserTemplates(): self
+    {
+        $this->use_package_namespace = false;
+        return $this;
+    }
+
+    /**
      * Default create method for showing new resource form.
      *
      * @param Request $request
@@ -216,6 +261,7 @@ trait GenerateForm
      */
     public function create(Request $request)
     {
+        $this->setTplForm();
         return $this->generateForm();
     }
 
@@ -228,6 +274,7 @@ trait GenerateForm
      */
     public function edit(Request $request, int|string $id)
     {
+        $this->setTplForm();
         return $this->generateForm($id);
     }
 

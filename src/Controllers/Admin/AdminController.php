@@ -22,7 +22,7 @@ abstract class AdminController extends Controller implements UseDatabase
         $this->middleware('auth:admin');
         $this->theme = config('cms.admin_theme', 'admin');
         $this->view = new View($filesystem, $this->theme);
-        
+
         // Set default per-page to 20 for admin controllers
         if (method_exists($this, 'setDefaultPerPage')) {
             $this->setDefaultPerPage(20);
@@ -67,7 +67,7 @@ abstract class AdminController extends Controller implements UseDatabase
         $this->view->withJsVariables([
             'base_url' => url('/'),
         ]);
-        
+
         // Load core plugins
         $this->view->withPlugins(['sweetalert2', 'sidebar-mobile', 'mobile-footer-nav']);
     }
@@ -117,7 +117,7 @@ abstract class AdminController extends Controller implements UseDatabase
                 }
             }
         }
-        
+
         // Default implementation - child classes can override with parent::query($sql)
         // Common query modifications like soft deletes, active status, etc.
     }
@@ -139,6 +139,7 @@ abstract class AdminController extends Controller implements UseDatabase
      */
     public function setTplForm(): void
     {
+        $this->useCoreTemplates();
         $this->view->setTpl('form.index');
     }
 
@@ -150,6 +151,7 @@ abstract class AdminController extends Controller implements UseDatabase
      */
     public function setTplList(): void
     {
+        $this->useCoreTemplates();
         $this->view->setTpl('list.index');
     }
 
