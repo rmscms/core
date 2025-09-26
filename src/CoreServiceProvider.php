@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\AuthenticationException;
 use RMS\Core\Validation\CustomValidationRules;
+use RMS\Core\Services\AdminRateLimiter;
+use RMS\Core\Services\AdminAuthService;
+use RMS\Core\Services\NotificationsService;
+use RMS\Core\Console\InstallCommand;
+use RMS\Core\Console\Commands\ProcessDueReminders;
+use RMS\Core\Console\Commands\SeedTestNotifications;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -23,6 +29,11 @@ class CoreServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/plugins.php' => config_path('plugins.php'),
         ], 'cms-plugins-config');
+
+        // Publish notifications config (optional)
+        $this->publishes([
+            __DIR__.'/../config/notifications.php' => config_path('rms/notifications.php'),
+        ], 'rms-notifications-config');
 
         $this->publishes([
             __DIR__.'/../assets/' => public_path(config('cms.admin_theme')),
@@ -49,7 +60,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../routes/admin.php');
 
         $this->commands([
-            \RMS\Core\Console\InstallCommand::class,
+            InstallCommand::class,
+            ProcessDueReminders::class,
+            SeedTestNotifications::class,
         ]);
 
         // Register custom Blade directives
@@ -68,6 +81,8 @@ class CoreServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/cms.php', 'cms');
+        // Merge notifications into rms.* namespace
+        $this->mergeConfigFrom(__DIR__.'/../config/notifications.php', 'rms');
 
         config([
             'auth.guards' => array_merge(config('auth.guards', []), config('cms.auth.guards', [])),
@@ -75,8 +90,10 @@ class CoreServiceProvider extends ServiceProvider
         ]);
 
         // Register admin authentication services
-        $this->app->singleton(\RMS\Core\Services\AdminRateLimiter::class);
-        $this->app->singleton(\RMS\Core\Services\AdminAuthService::class);
+        $this->app->singleton(AdminRateLimiter::class);
+        $this->app->singleton(AdminAuthService::class);
+        // Bind NotificationsService
+        $this->app->singleton(NotificationsService::class);
     }
 
     /**

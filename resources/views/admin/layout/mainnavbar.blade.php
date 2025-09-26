@@ -201,10 +201,10 @@
                     <i class="ph-magnifying-glass"></i>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="#" class="navbar-nav-link navbar-nav-link-icon rounded-pill" data-bs-toggle="offcanvas" data-bs-target="#notifications">
+            <li class="nav-item position-relative">
+                <a href="#" class="navbar-nav-link navbar-nav-link-icon rounded-pill" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-label="Notifications">
                     <i class="ph-bell"></i>
-                    <span class="badge bg-yellow text-black position-absolute top-0 end-0 translate-middle-top zindex-1 rounded-pill mt-1 me-1">2</span>
+                    <span id="notif-badge" class="badge bg-yellow text-black position-absolute top-0 end-0 translate-middle-top zindex-1 rounded-pill mt-1 me-1 d-none">0</span>
                 </a>
             </li>
 

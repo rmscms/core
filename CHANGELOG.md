@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2025-09-26
+
+### 🚀 Added
+- Unified Notifications System in Core (rms_notifications, deliveries, schedules)
+  - Migrations: rms_notifications, rms_notification_deliveries, rms_notification_schedules
+  - Models: Notification, NotificationDelivery, NotificationSchedule
+  - Service: NotificationsService (sendNow, schedule, cancel, recurrence calculation)
+  - Jobs/Commands: SendNotificationJob, rms:notifications:process-due, rms:notifications:test-seed
+  - Config: config/rms/notifications.php (push off by default, channels placeholders)
+  - Controller/Routes: Admin NotificationsController + admin routes (unread, mark read/all)
+  - UI: Navbar bell badge + Offcanvas notifications, dynamic via AJAX
+  - Assets: notification.js with polling, mark-as-read handling, improved dark styling
+
+### 🎨 Enhanced
+- Dark-mode friendly offcanvas header and actions (info button, border accents)
+- Persian date output in unread JSON (created_at_persian) and UI alignment tweaks
+
+### 🏗️ Technical
+- Service provider imports cleanup and class registration via use statements
+- Route imports cleanup with proper controller imports
+
+---
+
 ## [1.0.6] - 2025-01-22
 
 ### 🚀 Added

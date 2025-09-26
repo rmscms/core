@@ -66,10 +66,18 @@ abstract class AdminController extends Controller implements UseDatabase
 
         $this->view->withJsVariables([
             'base_url' => url('/'),
+            'notifications' => [
+                'unread_url' => route('admin.notifications.unread'),
+                'mark_read_url' => route('admin.notifications.markRead', ['id' => '__ID__']),
+                'mark_all_read_url' => route('admin.notifications.markAllRead'),
+            ],
         ]);
 
         // Load core plugins
         $this->view->withPlugins(['sweetalert2', 'sidebar-mobile', 'mobile-footer-nav']);
+
+        // Register notifications JS
+        $this->view->withJs($this->theme . '/js/notification.js', true);
     }
 
     /**
