@@ -479,7 +479,8 @@ class RMSImageUploader {
 
             // Build delete URL
             const fieldName = this.getFieldNameFromInput(preview.closest('.image-uploader'));
-            const deleteUrl = `/admin/${controllerName}/${modelId}/ajax-delete/${fieldName}?file_path=${encodeURIComponent(config.existingPath)}`;
+            const base = this.getCustomUploadBase(preview.closest('.image-uploader'));
+            const deleteUrl = `${base}/${modelId}/ajax-delete/${fieldName}?file_path=${encodeURIComponent(config.existingPath)}`;
 
             // Show loading state
             const wrapper = preview.closest('.rms-image-uploader-wrapper');
@@ -897,8 +898,8 @@ class RMSImageUploader {
         formData.append('_token', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '');
 
         try {
-            // Build upload URL
-            const uploadUrl = `/admin/${this.getControllerName()}/${config.modelId}/ajax-upload/${config.fieldName}`;
+            // Build upload URL using custom base
+            const uploadUrl = `${this.getCustomUploadBase(container)}/${config.modelId}/ajax-upload/${config.fieldName}`;
 
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -976,7 +977,7 @@ class RMSImageUploader {
 
         try {
             // Build upload URL
-            const uploadUrl = `/admin/${this.getControllerName()}/${config.modelId}/ajax-upload/${config.fieldName}`;
+            const uploadUrl = `${this.getCustomUploadBase(container)}/${config.modelId}/ajax-upload/${config.fieldName}`;
 
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -1143,6 +1144,10 @@ class RMSImageUploader {
      * Get controller name from current URL
      */
     getControllerName() {
+        const input = document.querySelector('.image-uploader input[type="file"]');
+        if (input && input.dataset && input.dataset.controller) {
+            return input.dataset.controller;
+        }
         const path = window.location.pathname;
         const match = path.match(/\/admin\/([^\/]+)/);
         return match ? match[1] : 'upload';
@@ -1544,6 +1549,18 @@ class RMSImageUploader {
         }
     }
 }
+
+/**
+ * Resolve custom upload base from data attributes or global prefix
+ */
+RMSImageUploader.prototype.getCustomUploadBase = function(container) {
+    const input = container.querySelector ? container.querySelector('input[type="file"]') : null;
+    if (input && input.dataset && input.dataset.uploadUrlBase) {
+        return input.dataset.uploadUrlBase.replace(/\/$/, '');
+    }
+    const prefix = window.cmsAdminPrefix || '/admin';
+    return `${prefix.replace(/\/$/, '')}/${this.getControllerName()}`;
+};
 
 // Global instance
 window.RMSImageUploader = RMSImageUploader;

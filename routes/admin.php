@@ -19,7 +19,10 @@ Route::middleware(['web', 'throttle:60,1'])
             Route::post('/login', [AdminLoginController::class, 'login'])
                 ->middleware('throttle:5,1') // More restrictive for login attempts
                 ->name('login.submit');
-        });
+    // Private file serve route (admin-only)
+    Route::get('files/{id}', [\RMS\Core\Http\Controllers\Admin\FileServeController::class, 'show'])
+        ->name('files.show');
+});
 
         // Authenticated admin routes
         Route::middleware([\RMS\Core\Middleware\AdminAuthenticate::class, 'verified:admin'])->group(function () {

@@ -166,6 +166,19 @@ public function getStats(): array
 
 ## 🔌 Plugin System
 
+### Image Uploader (with dynamic base and private file serving)
+- Add on your FILE field in Blade via data-uploader="image-uploader"
+- Provide optional data attributes:
+  - data-upload-url-base="/admin/contracts" (recommended in edit mode)
+  - data-controller="contracts" (fallback detection supported)
+  - data-ajax-upload, data-model-id, data-existing-files, data-preview, data-drag-drop
+- JS resolves endpoints as:
+  - POST {base}/{modelId}/ajax-upload/{field}
+  - DELETE {base}/{modelId}/ajax-delete/{field}?file_path=...
+- Private file preview (admin):
+  - Route: admin.files.show -> GET admin/files/{id}
+  - Use this URL in existing-files payload for previews.
+
 RMS Core includes a powerful plugin system:
 
 - **Image Uploader** - Drag & drop image uploads

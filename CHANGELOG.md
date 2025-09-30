@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2025-09-30
+
+### 🚀 Added
+- Image Uploader plugin now supports dynamic admin prefix and custom base URLs
+  - New data-upload-url-base and data-controller attributes in Blade form for FILE fields
+  - JS resolves base via data-upload-url-base -> window.cmsAdminPrefix -> fallback '/admin'
+- Admin private file serve route and controller for viewing private attachments
+  - Route: GET admin/files/{id} -> admin.files.show
+  - Controller: RMS\\Core\\Http\\Controllers\\Admin\\FileServeController
+- Existing preview support for multiple files via data-existing-files in form
+
+### 🎨 Enhanced
+- Blade form template: wraps FILE inputs with image-uploader wrapper when requested via data-uploader
+- Proper propagation of data-* and accept/multiple attributes to underlying input
+
+### 🏗️ Technical
+- Assets moved/enhanced under core/assets/plugins/image-uploader/image-uploader.js with dynamic base helpers
+- Backward-compatible defaults preserved
+
+---
+
 ## [1.1.0] - 2025-09-26
 
 ### 🚀 Added

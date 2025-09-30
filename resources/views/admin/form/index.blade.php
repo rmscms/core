@@ -161,13 +161,53 @@
                                 @break
 
                                 {{-- FILE Input --}}
-                                @case(\RMS\Core\Data\Field::FILE)
-                                    <input type="file"
-                                           name="{{ $field->key }}"
-                                           class="form-control @error($field->key) is-invalid @enderror"
-                                           @if($field->required) required @endif
-                                           @if($field->disabled) disabled @endif
-                                           @if($field->multiple) multiple @endif>
+@case(\\RMS\\Core\\Data\\Field::FILE)
+                                    @php
+                                        // Build data/accept/multiple attributes from field->attributes
+                                        $fileInputAttributes = '';
+                                        $wrapWithImageUploader = false;
+
+                                        if (!empty($field->attributes)) {
+                                            foreach ($field->attributes as $attr => $value) {
+                                                if (str_starts_with($attr, 'data-')) {
+                                                    $fileInputAttributes .= ' ' . $attr . '="' . e($value) . '"';
+                                                } elseif ($attr === 'accept' && $value) {
+                                                    $fileInputAttributes .= ' accept="' . e($value) . '"';
+                                                } elseif ($attr === 'multiple' && $value) {
+                                                    $fileInputAttributes .= ' multiple';
+                                                }
+                                                // If developer explicitly wants image-uploader, respect it
+                                                if ($attr === 'data-uploader' && $value === 'image-uploader') {
+                                                    $wrapWithImageUploader = true;
+                                                }
+                                            }
+                                        }
+
+                                        // Also respect $field->multiple flag
+                                        if ($field->multiple && !str_contains($fileInputAttributes, ' multiple')) {
+                                            $fileInputAttributes .= ' multiple';
+                                        }
+                                    @endphp
+
+                                    @if($wrapWithImageUploader)
+                                        <div class="image-uploader">
+                                            <input type="file"
+                                                   name="{{ $field->key }}"
+                                                   class="form-control @error($field->key) is-invalid @enderror"
+                                                   data-controller="{{ request()->segment(2) }}"
+                                                   @if(isset($is_edit_mode) && $is_edit_mode && isset($model)) data-upload-url-base="{{ url(trim(config('cms.admin_url','admin'), '/').'/'.request()->segment(2)) }}" @endif
+                                                   @if($field->required) required @endif
+                                                   @if($field->disabled) disabled @endif
+                                                   {!! $fileInputAttributes !!}>
+                                        </div>
+                                    @else
+                                        <input type="file"
+                                               name="{{ $field->key }}"
+                                               class="form-control @error($field->key) is-invalid @enderror"
+                                               @if($field->required) required @endif
+                                               @if($field->disabled) disabled @endif
+                                               {!! $fileInputAttributes !!}>
+                                    @endif
                                 @break
 
                                 {{-- IMAGE Upload with Preview --}}
