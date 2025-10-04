@@ -17,29 +17,29 @@
         @include('cms::admin.list.stats')
 
         @if($hasFilterableFields && $supportsFilter)
-        <div class="card mb-3">
-            <div class="card-header d-flex flex-wrap justify-content-between">
-                <h6 class="mb-0">
-                    <a class="text-body" data-card-action="collapse">
-                        فیلتر
-                        @if($listData['has_filters'] ?? false)
-                            <span class="badge bg-info ms-2">{{ count($listData['active_filters']) }}</span>
-                        @endif
-                    </a>
-                </h6>
-                <div>
-                    <a class="text-body mx-2" data-card-action="reload">
-                        <i class="ph-arrows-clockwise"></i>
-                    </a>
-                    <a class="text-body" data-card-action="collapse">
-                        <i class="ph-caret-down"></i>
-                    </a>
+            <div class="card mb-3">
+                <div class="card-header d-flex flex-wrap justify-content-between">
+                    <h6 class="mb-0">
+                        <a class="text-body" data-card-action="collapse">
+                            فیلتر
+                            @if($listData['has_filters'] ?? false)
+                                <span class="badge bg-info ms-2">{{ count($listData['active_filters']) }}</span>
+                            @endif
+                        </a>
+                    </h6>
+                    <div>
+                        <a class="text-body mx-2" data-card-action="reload">
+                            <i class="ph-arrows-clockwise"></i>
+                        </a>
+                        <a class="text-body" data-card-action="collapse">
+                            <i class="ph-caret-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="collapse{{ ($listData['has_filters'] ?? false) ? ' show' : '' }}" id="collapsible_card_filter">
+                    @include('cms::admin.list.filter')
                 </div>
             </div>
-            <div class="collapse{{ ($listData['has_filters'] ?? false) ? ' show' : '' }}" id="collapsible_card_filter">
-                @include('cms::admin.list.filter')
-            </div>
-        </div>
         @endif
 
         <div class="card flex-grow-1 d-flex flex-column">
@@ -103,7 +103,7 @@
 
                             {{-- Dynamic Field Headers --}}
                             @foreach($listData['fields'] as $field)
-                                <th class="text-center {{ $field['class'] ?? '' }}" @if(isset($field['width']) && $field['width'] !== 'auto') width="{{ $field['width'] }}" @endif>
+                                <th class="{{ (!empty($field['class']) ? $field['class'] : 'text-center') }}" @if(isset($field['width']) && $field['width'] !== 'auto') width="{{ $field['width'] }}" @endif>
                                     @if(($field['sortable'] ?? false) && isset($controller) && $controller instanceof \RMS\Core\Contracts\Filter\HasSort && isset($listData['routes']['sort']))
                                         <div class="d-flex align-items-center justify-content-center gap-2">
                                             <span>{{ $field['title'] }}</span>
@@ -171,7 +171,7 @@
 
                                 {{-- Dynamic Field Columns --}}
                                 @foreach($listData['fields'] as $field)
-                                    <td class="{{ $field['class'] ?? 'text-center' }} align-middle {{ $field['key'] }}">
+                                    <td class="{{ (!empty($field['class']) ? $field['class'] : 'text-center') }} align-middle {{ $field['key'] }}">
                                         @if(($field['type'] ?? '') === 'bool' && !($field['method'] ?? false) && isset($controller) && $controller instanceof \RMS\Core\Contracts\Actions\ChangeBoolField)
                                             {{-- Boolean Toggle Field --}}
                                             @php
@@ -182,13 +182,12 @@
                                                 $toggleUrl = $controller->boolFieldUrl($rowId, $fieldKey);
                                             @endphp
 
-                                            {{-- Limitless Style Toggle Button --}}
-                                            <button type="button"
-                                                    class="btn {{ $isActive ? 'btn-success' : 'btn-light' }} btn-sm toggle-btn"
-                                                    data-toggle-url="{{ $toggleUrl }}"
-                                                    title="{{ $isActive ? 'کلیک برای غیرفعال کردن' : 'کلیک برای فعال کردن' }}">
-                                                <i class="ph {{ $isActive ? 'ph-check text-white' : 'ph-x text-muted' }}" style="font-size: 14px;"></i>
-                                            </button>
+                                            {{-- Boolean Toggle as AJAX link (global style) --}}
+                                            <a href="{{ $toggleUrl }}" class="ajax-bool" title="{{ $isActive ? 'کلیک برای غیرفعال کردن' : 'کلیک برای فعال کردن' }}">
+                                                <button type="button" class="btn {{ $isActive ? 'btn-success' : 'btn-danger' }} btn-sm">
+                                                    <i class="ph-{{ $isActive ? 'check' : 'x' }}"></i>
+                                                </button>
+                                            </a>
                                         @elseif(in_array($field['type'] ?? '', ['date', 'date_time']))
                                             {{-- Date/DateTime Field with Persian Formatting --}}
                                             @php
@@ -235,20 +234,20 @@
                                                     @endphp
                                                     @if(!$shouldSkip)
                                                         @if($action->confirm ?? false)
-                                                        <a href="#" class="dropdown-item{{ isset($action->class_name) && str_contains($action->class_name, 'danger') ? ' text-danger' : '' }}"
-                                                           data-bs-toggle="modal" data-bs-target="#confirmModal"
-                                                           data-action-url="{{ route($action->route, [$listData['routes']['parameter'] ?? 'id' => $rowId]) }}"
-                                                           data-action-method="{{ $action->method ?? 'GET' }}"
-                                                           data-action-title="{{ $action->title }}">
-                                                            {!! $action->icon ?? '<i class="ph-gear"></i>' !!}
-                                                            {{ $action->title }}
-                                                        </a>
-                                                    @else
-                                                        <a href="{{ route($action->route, [$listData['routes']['parameter'] ?? 'id' => $rowId]) }}"
-                                                           class="dropdown-item{{ isset($action->class_name) && str_contains($action->class_name, 'danger') ? ' text-danger' : '' }}">
-                                                            {!! $action->icon ?? '<i class="ph-gear"></i>' !!}
-                                                            {{ $action->title }}
-                                                        </a>
+                                                            <a href="#" class="dropdown-item{{ isset($action->class_name) && str_contains($action->class_name, 'danger') ? ' text-danger' : '' }}"
+                                                               data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                               data-action-url="{{ route($action->route, [$listData['routes']['parameter'] ?? 'id' => $rowId]) }}"
+                                                               data-action-method="{{ $action->method ?? 'GET' }}"
+                                                               data-action-title="{{ $action->title }}">
+                                                                {!! $action->icon ?? '<i class="ph-gear"></i>' !!}
+                                                                {{ $action->title }}
+                                                            </a>
+                                                        @else
+                                                            <a href="{{ route($action->route, [$listData['routes']['parameter'] ?? 'id' => $rowId]) }}"
+                                                               class="dropdown-item{{ isset($action->class_name) && str_contains($action->class_name, 'danger') ? ' text-danger' : '' }}">
+                                                                {!! $action->icon ?? '<i class="ph-gear"></i>' !!}
+                                                                {{ $action->title }}
+                                                            </a>
                                                         @endif
                                                     @endif
                                                 @endforeach
@@ -259,7 +258,7 @@
                             </tr>
                         @empty
                             <tr>
-@php
+                                @php
                                     $hasBatchActions = isset($controller) && $controller instanceof \RMS\Core\Contracts\Batch\HasBatch && ($listData['actions']['has_batch_actions'] ?? false);
                                     $colspanCount = count($listData['fields']) + ($hasBatchActions ? 1 : 0) + (($listData['config']['view_id'] ?? false) && !$hasBatchActions ? 1 : 0) + ($listData['actions']['has_row_actions'] ? 1 : 0);
                                 @endphp
@@ -276,152 +275,152 @@
                 </div>
             </div>
 
-            @if((isset($controller) && $controller instanceof \RMS\Core\Contracts\Batch\HasBatch && ($listData['actions']['has_batch_actions'] ?? false)) || ($listData['pagination']['total'] ?? 0) > ($listData['config']['per_page'] ?? 15) || ($listData['pagination']['total'] ?? 0) > 10)
-            <div class="card-footer mt-auto">
-                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-                    {{-- Left side: Batch Actions --}}
-                    <div class="d-flex align-items-center gap-2">
-                        @if(isset($controller) && $controller instanceof \RMS\Core\Contracts\Batch\HasBatch && ($listData['actions']['has_batch_actions'] ?? false))
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
-                                        data-bs-toggle="dropdown" id="batch-actions-btn" disabled>
-                                    <i class="ph-check-square-offset me-1"></i>
-                                    عملیات انتخابها
-                                </button>
-                                <ul class="dropdown-menu">
-                                    @foreach($listData['actions']['batch_actions'] as $batchAction)
-                                        <li>
-                                            <a class="dropdown-item{{ isset($batchAction->class_name) && str_contains($batchAction->class_name, 'danger') ? ' text-danger' : '' }}"
-                                               href="#" onclick="submitBatchAction('{{ $batchAction->url }}')">
-                                                {!! $batchAction->icon ?? '<i class="ph-gear"></i>' !!}
-                                                {{ $batchAction->title }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+            @if((isset($controller) && $controller instanceof \RMS\Core\Contracts\Batch\HasBatch && ($listData['actions']['has_batch_actions'] ?? false)) || ($listData['pagination']['total'] ?? 0) > ($listData['config']['per_page'] ?? 15) || ($listData['pagination']['total'] ?? 0) > 10 || ($listData['config']['simple_pagination'] ?? false))
+                <div class="card-footer mt-auto">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                        {{-- Left side: Batch Actions --}}
+                        <div class="d-flex align-items-center gap-2">
+                            @if(isset($controller) && $controller instanceof \RMS\Core\Contracts\Batch\HasBatch && ($listData['actions']['has_batch_actions'] ?? false))
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle"
+                                            data-bs-toggle="dropdown" id="batch-actions-btn" disabled>
+                                        <i class="ph-check-square-offset me-1"></i>
+                                        عملیات انتخابها
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @foreach($listData['actions']['batch_actions'] as $batchAction)
+                                            <li>
+                                                <a class="dropdown-item{{ isset($batchAction->class_name) && str_contains($batchAction->class_name, 'danger') ? ' text-danger' : '' }}"
+                                                   href="#" onclick="submitBatchAction('{{ $batchAction->url }}')">
+                                                    {!! $batchAction->icon ?? '<i class="ph-gear"></i>' !!}
+                                                    {{ $batchAction->title }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
-                        {{-- Per Page Selector --}}
-                        @if(($listData['pagination']['total'] ?? 0) > 10)
-                            <div class="d-flex align-items-center gap-2">
-                                <label for="per_page" class="form-label mb-0 text-nowrap">نمایش:</label>
-                                <select name="perPage" id="per_page" class="form-select form-select-sm"
-                                        onchange="changePerPage(this.value)" style="min-width: 80px;">
-                                    @foreach([10, 20, 30, 50, 100] as $perPageOption)
-                                        <option value="{{ $perPageOption }}"
+                            {{-- Per Page Selector --}}
+                            @if(($listData['pagination']['total'] ?? 0) > 10 || ($listData['config']['simple_pagination'] ?? false))
+                                <div class="d-flex align-items-center gap-2">
+                                    <label for="per_page" class="form-label mb-0 text-nowrap">نمایش:</label>
+                                    <select name="perPage" id="per_page" class="form-select form-select-sm"
+                                            onchange="changePerPage(this.value)" style="min-width: 80px;">
+                                        @foreach([10, 20, 30, 50, 100] as $perPageOption)
+                                            <option value="{{ $perPageOption }}"
                                                 {{ ($listData['pagination']['per_page'] ?? 15) == $perPageOption ? 'selected' : '' }}>
-                                            {{ $perPageOption }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                                {{ $perPageOption }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Right side: Pagination --}}
+                        @if($listData['has_pagination'] ?? false)
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                {{-- Pagination Info --}}
+                                <div class="text-muted">
+                                    @if(isset($listData['pagination']['total']) && $listData['pagination']['total'] !== null)
+                                        {{-- Regular pagination with total count --}}
+                                        نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }} از {{ number_format($listData['pagination']['total']) }} مورد
+                                    @else
+                                        {{-- Simple pagination without total count --}}
+                                        نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }}
+                                        (صفحه {{ $listData['pagination']['current_page'] ?? 1 }})
+                                    @endif
+                                </div>
+
+                                {{-- Pagination Links --}}
+                                @php
+                                    $hasLastPage = isset($listData['pagination']['last_page']) && $listData['pagination']['last_page'] !== null;
+                                    $isSimplePagination = !$hasLastPage;
+                                @endphp
+
+                                @if($isSimplePagination || ($listData['pagination']['last_page'] ?? 1) > 1)
+                                    <nav aria-label="صفحه‌بندی">
+                                        <ul class="pagination pagination-sm mb-0">
+                                            {{-- Previous Page --}}
+                                            @if($listData['pagination']['current_page'] > 1)
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $listData['pagination']['current_page'] - 1]) }}">
+                                                        <i class="ph-caret-left"></i> قبلی
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled">
+                                                <span class="page-link">
+                                                    <i class="ph-caret-left"></i> قبلی
+                                                </span>
+                                                </li>
+                                            @endif
+
+                                            @if($isSimplePagination)
+                                                {{-- Simple pagination: only show current page --}}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ $listData['pagination']['current_page'] ?? 1 }}</span>
+                                                </li>
+                                            @else
+                                                {{-- Regular pagination: show page numbers --}}
+                                                @php
+                                                    $currentPage = $listData['pagination']['current_page'] ?? 1;
+                                                    $lastPage = $listData['pagination']['last_page'] ?? 1;
+                                                    $startPage = max(1, $currentPage - 2);
+                                                    $endPage = min($lastPage, $currentPage + 2);
+                                                @endphp
+
+                                                @if($startPage > 1)
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => 1]) }}">1</a>
+                                                    </li>
+                                                    @if($startPage > 2)
+                                                        <li class="page-item disabled">
+                                                            <span class="page-link">...</span>
+                                                        </li>
+                                                    @endif
+                                                @endif
+
+                                                @for($i = $startPage; $i <= $endPage; $i++)
+                                                    <li class="page-item {{ $i === $currentPage ? 'active' : '' }}">
+                                                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
+                                                    </li>
+                                                @endfor
+
+                                                @if($endPage < $lastPage)
+                                                    @if($endPage < $lastPage - 1)
+                                                        <li class="page-item disabled">
+                                                            <span class="page-link">...</span>
+                                                        </li>
+                                                    @endif
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}">{{ $lastPage }}</a>
+                                                    </li>
+                                                @endif
+                                            @endif
+
+                                            {{-- Next Page --}}
+                                            @if($listData['pagination']['has_more_pages'] ?? false)
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => ($listData['pagination']['current_page'] ?? 1) + 1]) }}">
+                                                        بعدی <i class="ph-caret-right"></i>
+                                                    </a>
+                                                </li>
+                                            @else
+                                                <li class="page-item disabled">
+                                                <span class="page-link">
+                                                    بعدی <i class="ph-caret-right"></i>
+                                                </span>
+                                                </li>
+                                            @endif
+                                        </ul>
+                                    </nav>
+                                @endif
                             </div>
                         @endif
                     </div>
-
-                    {{-- Right side: Pagination --}}
-                    @if($listData['has_pagination'] ?? false)
-                        <div class="d-flex align-items-center gap-3 flex-wrap">
-                            {{-- Pagination Info --}}
-                            <div class="text-muted">
-                                @if(isset($listData['pagination']['total']) && $listData['pagination']['total'] !== null)
-                                    {{-- Regular pagination with total count --}}
-                                    نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }} از {{ number_format($listData['pagination']['total']) }} مورد
-                                @else
-                                    {{-- Simple pagination without total count --}}
-                                    نمایش {{ $listData['pagination']['from'] ?? 1 }} تا {{ $listData['pagination']['to'] ?? $listData['pagination']['per_page'] }} 
-                                    (صفحه {{ $listData['pagination']['current_page'] ?? 1 }})
-                                @endif
-                            </div>
-
-                            {{-- Pagination Links --}}
-                            @php
-                                $hasLastPage = isset($listData['pagination']['last_page']) && $listData['pagination']['last_page'] !== null;
-                                $isSimplePagination = !$hasLastPage;
-                            @endphp
-                            
-                            @if($isSimplePagination || ($listData['pagination']['last_page'] ?? 1) > 1)
-                                <nav aria-label="صفحه‌بندی">
-                                    <ul class="pagination pagination-sm mb-0">
-                                        {{-- Previous Page --}}
-                                        @if($listData['pagination']['current_page'] > 1)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $listData['pagination']['current_page'] - 1]) }}">
-                                                    <i class="ph-caret-left"></i> قبلی
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    <i class="ph-caret-left"></i> قبلی
-                                                </span>
-                                            </li>
-                                        @endif
-
-                                        @if($isSimplePagination)
-                                            {{-- Simple pagination: only show current page --}}
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ $listData['pagination']['current_page'] ?? 1 }}</span>
-                                            </li>
-                                        @else
-                                            {{-- Regular pagination: show page numbers --}}
-                                            @php
-                                                $currentPage = $listData['pagination']['current_page'] ?? 1;
-                                                $lastPage = $listData['pagination']['last_page'] ?? 1;
-                                                $startPage = max(1, $currentPage - 2);
-                                                $endPage = min($lastPage, $currentPage + 2);
-                                            @endphp
-
-                                            @if($startPage > 1)
-                                                <li class="page-item">
-                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => 1]) }}">1</a>
-                                                </li>
-                                                @if($startPage > 2)
-                                                    <li class="page-item disabled">
-                                                        <span class="page-link">...</span>
-                                                    </li>
-                                                @endif
-                                            @endif
-
-                                            @for($i = $startPage; $i <= $endPage; $i++)
-                                                <li class="page-item {{ $i === $currentPage ? 'active' : '' }}">
-                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $i]) }}">{{ $i }}</a>
-                                                </li>
-                                            @endfor
-
-                                            @if($endPage < $lastPage)
-                                                @if($endPage < $lastPage - 1)
-                                                    <li class="page-item disabled">
-                                                        <span class="page-link">...</span>
-                                                    </li>
-                                                @endif
-                                                <li class="page-item">
-                                                    <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => $lastPage]) }}">{{ $lastPage }}</a>
-                                                </li>
-                                            @endif
-                                        @endif
-
-                                        {{-- Next Page --}}
-                                        @if($listData['pagination']['has_more_pages'] ?? false)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ request()->fullUrlWithQuery(['page' => ($listData['pagination']['current_page'] ?? 1) + 1]) }}">
-                                                    بعدی <i class="ph-caret-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
-                                                    بعدی <i class="ph-caret-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
-                            @endif
-                        </div>
-                    @endif
                 </div>
-            </div>
             @endif
         </div>
     </div>
@@ -454,135 +453,135 @@
 @endsection
 
 @push('styles')
-<style>
-/* Fix large icons in empty state */
-.table .ph-3x {
-    font-size: 2.5rem !important;
-    opacity: 0.3;
-}
+    <style>
+        /* Fix large icons in empty state */
+        .table .ph-3x {
+            font-size: 2.5rem !important;
+            opacity: 0.3;
+        }
 
-/* Fix table header sort buttons */
-.table thead th .btn {
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-}
+        /* Fix table header sort buttons */
+        .table thead th .btn {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
 
-.table thead th .btn:hover {
-    background: none !important;
-    transform: scale(1.1);
-}
+        .table thead th .btn:hover {
+            background: none !important;
+            transform: scale(1.1);
+        }
 
-.table thead th .btn:focus {
-    box-shadow: none !important;
-}
+        .table thead th .btn:focus {
+            box-shadow: none !important;
+        }
 
-/* Action dropdown icons */
-.dropdown-menu .dropdown-item i {
-    width: 1.2rem;
-    text-align: center;
-    margin-left: 0.5rem;
-    font-size: 0.875rem;
-}
+        /* Action dropdown icons */
+        .dropdown-menu .dropdown-item i {
+            width: 1.2rem;
+            text-align: center;
+            margin-left: 0.5rem;
+            font-size: 0.875rem;
+        }
 
-/* Custom pagination styles to override default Laravel pagination */
-.pagination {
-    display: flex;
-    padding-left: 0;
-    list-style: none;
-    border-radius: 0.375rem;
-    margin-bottom: 0 !important;
-    flex-wrap: wrap;
-    gap: 2px;
-}
+        /* Custom pagination styles to override default Laravel pagination */
+        .pagination {
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.375rem;
+            margin-bottom: 0 !important;
+            flex-wrap: wrap;
+            gap: 2px;
+        }
 
-.pagination .page-item {
-    position: relative;
-    display: block;
-    margin: 0;
-}
+        .pagination .page-item {
+            position: relative;
+            display: block;
+            margin: 0;
+        }
 
-.pagination .page-link {
-    position: relative;
-    display: block;
-    padding: 0.375rem 0.75rem;
-    margin-left: 0;
-    line-height: 1.25;
-    color: #6c757d;
-    text-decoration: none;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    font-size: 0.875rem;
-    border-radius: 0.375rem;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
-}
+        .pagination .page-link {
+            position: relative;
+            display: block;
+            padding: 0.375rem 0.75rem;
+            margin-left: 0;
+            line-height: 1.25;
+            color: #6c757d;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            font-size: 0.875rem;
+            border-radius: 0.375rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+        }
 
-.pagination .page-link:hover {
-    z-index: 2;
-    color: #0051a0;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-}
+        .pagination .page-link:hover {
+            z-index: 2;
+            color: #0051a0;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
 
-.pagination .page-link:focus {
-    z-index: 3;
-    color: #0051a0;
-    background-color: #e9ecef;
-    border-color: #86b7fe;
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
+        .pagination .page-link:focus {
+            z-index: 3;
+            color: #0051a0;
+            background-color: #e9ecef;
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
 
-.pagination .page-item.active .page-link {
-    z-index: 3;
-    color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
+        .pagination .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
 
-.pagination .page-item.disabled .page-link {
-    color: #6c757d;
-    pointer-events: none;
-    background-color: #fff;
-    border-color: #dee2e6;
-}
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
 
-/* Fix icons in pagination */
-.pagination .page-link i {
-    font-size: 0.75rem;
-    vertical-align: middle;
-}
+        /* Fix icons in pagination */
+        .pagination .page-link i {
+            font-size: 0.75rem;
+            vertical-align: middle;
+        }
 
-/* Small pagination for card footer */
-.card-footer .pagination {
-    --bs-pagination-padding-x: 0.5rem;
-    --bs-pagination-padding-y: 0.25rem;
-    --bs-pagination-font-size: 0.75rem;
-}
+        /* Small pagination for card footer */
+        .card-footer .pagination {
+            --bs-pagination-padding-x: 0.5rem;
+            --bs-pagination-padding-y: 0.25rem;
+            --bs-pagination-font-size: 0.75rem;
+        }
 
-.card-footer .pagination .page-link {
-    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
-    font-size: var(--bs-pagination-font-size);
-}
+        .card-footer .pagination .page-link {
+            padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+            font-size: var(--bs-pagination-font-size);
+        }
 
-/* Responsive pagination */
-@media (max-width: 576px) {
-    .pagination {
-        justify-content: center;
-        font-size: 0.75rem;
-    }
+        /* Responsive pagination */
+        @media (max-width: 576px) {
+            .pagination {
+                justify-content: center;
+                font-size: 0.75rem;
+            }
 
-    .pagination .page-link {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-    }
-}
-</style>
+            .pagination .page-link {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script>
+    <script>
 
-</script>
+    </script>
 @endpush

@@ -63,6 +63,7 @@ class CoreServiceProvider extends ServiceProvider
             InstallCommand::class,
             ProcessDueReminders::class,
             SeedTestNotifications::class,
+            \RMS\Core\Console\Commands\DbShiftCommand::class,
         ]);
 
         // Register custom Blade directives

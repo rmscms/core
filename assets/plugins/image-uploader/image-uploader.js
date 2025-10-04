@@ -170,15 +170,15 @@ class RMSImageUploader {
             // Create grid container for multiple files
             const gridContainer = document.createElement('div');
             gridContainer.className = 'row g-3';
-            
+
             config.existingFiles.forEach(fileData => {
                 const existingPreview = this.createExistingMultipleFilePreview(fileData, config);
                 gridContainer.appendChild(existingPreview);
                 hasExistingFiles = true;
             });
-            
+
             previewArea.appendChild(gridContainer);
-            
+
             if (hasExistingFiles && console && console.log) {
                 console.log('🖼️ Multiple existing files preview loaded:', config.existingFiles.length + ' files');
             }
@@ -188,7 +188,7 @@ class RMSImageUploader {
             const existingPreview = this.createExistingFilePreview(config);
             previewArea.appendChild(existingPreview);
             hasExistingFiles = true;
-            
+
             if (console && console.log) {
                 console.log('🖼️ Existing file preview loaded:', config.existingFilename);
             }
@@ -210,7 +210,7 @@ class RMSImageUploader {
     createExistingMultipleFilePreview(fileData, config) {
         const preview = document.createElement('div');
         preview.className = 'rms-image-preview-multiple col-12 col-md-6 mb-3 existing-file';
-        
+
         // اضافه cache busting به فایل موجود
         const existingFileUrl = this.addCacheBusting(fileData.url);
 
@@ -251,7 +251,7 @@ class RMSImageUploader {
         removeBtn.addEventListener('click', () => {
             this.confirmRemoveExistingMultipleFile(preview, fileData, config);
         });
-        
+
         // Setup image click for modal
         const imageClickable = preview.querySelector('.preview-thumbnail');
         if (imageClickable && existingFileUrl) {
@@ -271,7 +271,7 @@ class RMSImageUploader {
     createExistingFilePreview(config) {
         const preview = document.createElement('div');
         preview.className = 'rms-image-preview d-flex align-items-center p-3 border rounded mb-2 existing-file';
-        
+
         // اضافه cache busting به فایل موجود
         const existingFileUrl = this.addCacheBusting(config.existingFile);
 
@@ -326,11 +326,11 @@ class RMSImageUploader {
     showUploadArea(wrapper) {
         const uploadArea = wrapper.querySelector('.rms-upload-area');
         const previewArea = wrapper.querySelector('.rms-preview-area');
-        
+
         // چک کن که آیا حالت multiple هست (با بررسی وجود grid)
         const gridContainer = previewArea.querySelector('.row.g-3');
         const hasMultiplePreviews = previewArea.querySelector('.rms-image-preview-multiple');
-        
+
         if (hasMultiplePreviews || gridContainer) {
             // حالت multiple: فقط upload area را نمایش بده - preview area را مخفی نکن
             uploadArea.style.display = 'block';
@@ -340,11 +340,11 @@ class RMSImageUploader {
             previewArea.querySelectorAll('.rms-image-preview').forEach(preview => {
                 preview.style.display = 'none';
             });
-            
+
             // Hide preview area if no visible previews remain
             const visiblePreviews = Array.from(previewArea.querySelectorAll('.rms-image-preview'))
                 .filter(preview => preview.style.display !== 'none');
-            
+
             if (visiblePreviews.length === 0) {
                 previewArea.style.display = 'none';
             }
@@ -359,7 +359,7 @@ class RMSImageUploader {
      */
     confirmRemoveExistingMultipleFile(preview, fileData, config) {
         const fileName = fileData.filename || 'این فایل';
-        
+
         if (typeof Swal !== 'undefined') {
             Swal.fire({
                 title: 'حذف فایل',
@@ -409,7 +409,7 @@ class RMSImageUploader {
      */
     confirmRemoveExistingFile(preview, config) {
         const fileName = config.existingFilename || 'این فایل';
-        
+
         if (typeof Swal !== 'undefined') {
             // استفاده مستقیم از Swal مثل success message
             Swal.fire({
@@ -479,8 +479,7 @@ class RMSImageUploader {
 
             // Build delete URL
             const fieldName = this.getFieldNameFromInput(preview.closest('.image-uploader'));
-            const base = this.getCustomUploadBase(preview.closest('.image-uploader'));
-            const deleteUrl = `${base}/${modelId}/ajax-delete/${fieldName}?file_path=${encodeURIComponent(config.existingPath)}`;
+            const deleteUrl = `/admin/${controllerName}/${modelId}/ajax-delete/${fieldName}?file_path=${encodeURIComponent(config.existingPath)}`;
 
             // Show loading state
             const wrapper = preview.closest('.rms-image-uploader-wrapper');
@@ -519,7 +518,7 @@ class RMSImageUploader {
 
             // Successfully deleted from server
             this.removeExistingPreview(preview);
-            
+
 
             // Show success message
             if (typeof Swal !== 'undefined') {
@@ -617,9 +616,9 @@ class RMSImageUploader {
      */
     showMessage(message, type = 'info', container) {
         const alertClass = type === 'error' ? 'alert-danger' :
-                          type === 'success' ? 'alert-success' : 'alert-info';
+            type === 'success' ? 'alert-success' : 'alert-info';
         const icon = type === 'error' ? 'ph-warning-circle' :
-                    type === 'success' ? 'ph-check-circle' : 'ph-info-circle';
+            type === 'success' ? 'ph-check-circle' : 'ph-info-circle';
 
         const alert = document.createElement('div');
         alert.className = `alert ${alertClass} alert-dismissible fade show image-upload-message mb-3`;
@@ -889,17 +888,17 @@ class RMSImageUploader {
         }
 
         const formData = new FormData();
-        
+
         // Add all files to FormData with array notation
         files.forEach((file, index) => {
             formData.append(`${config.fieldName}[${index}]`, file);
         });
-        
+
         formData.append('_token', document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '');
 
         try {
-            // Build upload URL using custom base
-            const uploadUrl = `${this.getCustomUploadBase(container)}/${config.modelId}/ajax-upload/${config.fieldName}`;
+            // Build upload URL
+            const uploadUrl = `/admin/${this.getControllerName()}/${config.modelId}/ajax-upload/${config.fieldName}`;
 
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -916,7 +915,7 @@ class RMSImageUploader {
             }
 
             const previewArea = container.querySelector('.rms-preview-area');
-            
+
             // Create grid container if it doesn't exist
             let gridContainer = previewArea.querySelector('.row.g-3');
             if (!gridContainer) {
@@ -924,7 +923,7 @@ class RMSImageUploader {
                 gridContainer.className = 'row g-3';
                 previewArea.appendChild(gridContainer);
             }
-            
+
             // Create previews for all uploaded files
             if (result.uploaded_files && Array.isArray(result.uploaded_files)) {
                 result.uploaded_files.forEach((filePath, index) => {
@@ -936,16 +935,16 @@ class RMSImageUploader {
                     gridContainer.appendChild(preview);
                 });
             }
-            
+
             previewArea.style.display = 'block';
-            
+
             // Hide upload area after successful upload (for multiple files, keep it open)
             // Multiple files usually allow additional uploads
-            
+
             // Show success message with merge info if available
             const successMessage = result.message || `${files.length} فایل با موفقیت آپلود شد.`;
             this.showSuccess(successMessage, container);
-            
+
             // Debug: Log merge info
             if (result.total_files_count && result.new_files_count) {
                 console.log('📋 File Merge Info:', {
@@ -977,7 +976,7 @@ class RMSImageUploader {
 
         try {
             // Build upload URL
-            const uploadUrl = `${this.getCustomUploadBase(container)}/${config.modelId}/ajax-upload/${config.fieldName}`;
+            const uploadUrl = `/admin/${this.getControllerName()}/${config.modelId}/ajax-upload/${config.fieldName}`;
 
             const response = await fetch(uploadUrl, {
                 method: 'POST',
@@ -994,17 +993,17 @@ class RMSImageUploader {
             }
 
             const previewArea = container.querySelector('.rms-preview-area');
-            
+
             // حذف preview های موجود (برای جایگزینی فایل)
             previewArea.querySelectorAll('.rms-image-preview').forEach(existingPreview => {
                 existingPreview.remove();
             });
-            
+
             // Create preview with uploaded file info (with cache busting)
             const preview = this.createUploadedPreview(file, result, config);
             previewArea.appendChild(preview);
             previewArea.style.display = 'block';
-            
+
             // Hide upload area after successful upload
             const uploadArea = container.querySelector('.rms-upload-area');
             if (uploadArea) {
@@ -1069,23 +1068,23 @@ class RMSImageUploader {
      */
     removePreview(preview) {
         const isMultiple = preview.classList.contains('rms-image-preview-multiple');
-        
+
         if (isMultiple) {
             // حالت multiple: فقط card را حذف کن - هیچ کار اضافی نکن
             preview.remove();
             // تمام! هیچ کار دیگری نکن
-            
+
         } else {
             // حالت single: روش قدیمی
             const previewContainer = preview.closest('.rms-preview-area');
             preview.remove();
-            
+
             if (previewContainer) {
                 const remainingPreviews = previewContainer.querySelectorAll('.rms-image-preview, .rms-image-preview-multiple');
-                
+
                 if (remainingPreviews.length === 0) {
                     previewContainer.style.display = 'none';
-                    
+
                     const wrapper = previewContainer.closest('.rms-image-uploader-wrapper');
                     if (wrapper) {
                         const uploadArea = wrapper.querySelector('.rms-upload-area');
@@ -1144,10 +1143,6 @@ class RMSImageUploader {
      * Get controller name from current URL
      */
     getControllerName() {
-        const input = document.querySelector('.image-uploader input[type="file"]');
-        if (input && input.dataset && input.dataset.controller) {
-            return input.dataset.controller;
-        }
         const path = window.location.pathname;
         const match = path.match(/\/admin\/([^\/]+)/);
         return match ? match[1] : 'upload';
@@ -1158,7 +1153,7 @@ class RMSImageUploader {
      */
     createUploadedPreview(file, uploadResult, config) {
         const preview = document.createElement('div');
-        
+
         // Use different layout for multiple vs single files
         if (config.multiple) {
             // Grid layout: 1 فایل در موبایل، 2 فایل در تبلت، 2 فایل در دسکتاپ
@@ -1166,7 +1161,7 @@ class RMSImageUploader {
         } else {
             preview.className = 'rms-image-preview d-flex align-items-center p-3 border rounded mb-2 uploaded';
         }
-        
+
         preview.dataset.filePath = uploadResult.uploaded_files || '';
 
         // Use file info from server if available
@@ -1174,7 +1169,7 @@ class RMSImageUploader {
         let fileUrl = fileInfo.url || '';
         const fileName = fileInfo.name || file.name;
         const fileSize = fileInfo.formatted_size || this.formatFileSize(file.size);
-        
+
         // اضافه cache busting برای جلوگیری از cache مرورگر
         fileUrl = this.addCacheBusting(fileUrl);
 
@@ -1188,7 +1183,7 @@ class RMSImageUploader {
                     </div>
                     <div class="preview-thumbnail me-3 position-relative" style="cursor: pointer;" data-image-url="${fileUrl}" data-image-name="${fileName}">
                         ${fileUrl ? `<img src="${fileUrl}" class="rounded" style="width: ${config.thumbnail.width}px; height: ${config.thumbnail.height}px; object-fit: cover;">` :
-                                   `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: ${config.thumbnail.width}px; height: ${config.thumbnail.height}px;"><i class="ph-image fs-2 text-muted"></i></div>`}
+                `<div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: ${config.thumbnail.width}px; height: ${config.thumbnail.height}px;"><i class="ph-image fs-2 text-muted"></i></div>`}
                         <div class="position-absolute top-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 20px; height: 20px; font-size: 10px; margin: -5px;">🔍</div>
                     </div>
                     <div class="preview-info flex-grow-1">
@@ -1218,7 +1213,7 @@ class RMSImageUploader {
             preview.innerHTML = `
                 <div class="preview-thumbnail me-3">
                     ${fileUrl ? `<img src="${fileUrl}" class="rounded" style="width: ${config.thumbnail.width}px; height: ${config.thumbnail.height}px; object-fit: cover;">` :
-                               `<i class="ph-image fs-2 text-muted"></i>`}
+                `<i class="ph-image fs-2 text-muted"></i>`}
                 </div>
                 <div class="preview-info flex-grow-1">
                     <div class="fw-bold">${fileName}</div>
@@ -1251,7 +1246,7 @@ class RMSImageUploader {
                 this.showUploadArea(preview.closest('.rms-image-uploader-wrapper'));
             });
         }
-        
+
         // Setup remove button for AJAX delete
         const removeBtn = preview.querySelector('.btn-remove');
         if (removeBtn) {
@@ -1264,7 +1259,7 @@ class RMSImageUploader {
                 }
             });
         }
-        
+
         // Setup image click for modal (only for multiple files with images)
         if (config.multiple) {
             const imageClickable = preview.querySelector('.preview-thumbnail');
@@ -1288,10 +1283,10 @@ class RMSImageUploader {
             this.showError('اطلاعات لازم برای حذف فایل موجود نیست', previewElement.closest('.image-uploader'));
             return;
         }
-        
+
         // بررسی وجود SweetAlert
         const hasSwal = typeof Swal !== 'undefined';
-        
+
         // اگر SweetAlert موجود است، تایید بگیر
         if (hasSwal) {
             try {
@@ -1309,7 +1304,7 @@ class RMSImageUploader {
                     },
                     reverseButtons: true
                 });
-                
+
                 if (!result.isConfirmed) {
                     return; // کاربر انصراف داده
                 }
@@ -1340,7 +1335,7 @@ class RMSImageUploader {
             // Get container before removing preview
             const container = previewElement.closest('.image-uploader');
             const wrapper = previewElement.closest('.rms-image-uploader-wrapper');
-            
+
             // Remove preview element (all logic for showing/hiding areas handled in removePreview method)
             this.removePreview(previewElement);
 
@@ -1367,26 +1362,26 @@ class RMSImageUploader {
         if (!modal) {
             modal = this.createImageModal();
         }
-        
+
         // پر کردن محتوای modal
         const modalImage = modal.querySelector('.modal-image');
         const modalTitle = modal.querySelector('.modal-title');
         const modalSize = modal.querySelector('.modal-size');
         const loadingSpinner = modal.querySelector('.loading-spinner');
-        
+
         // نمایش loading
         modalImage.style.display = 'none';
         loadingSpinner.style.display = 'flex';
         modalTitle.textContent = imageName || 'تصویر';
         modalSize.textContent = imageSize || '';
-        
+
         // نمایش modal
         const bsModal = new bootstrap.Modal(modal, {
             backdrop: true,
             keyboard: true
         });
         bsModal.show();
-        
+
         // بارگذاری تصویر با سایز کامل
         const fullImage = new Image();
         fullImage.onload = () => {
@@ -1399,7 +1394,7 @@ class RMSImageUploader {
         };
         fullImage.src = imageUrl;
     }
-    
+
     /**
      * Create image modal HTML
      */
@@ -1429,7 +1424,7 @@ class RMSImageUploader {
                 </div>
             </div>
         `;
-        
+
         // اضافه کردن به body
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         return document.getElementById('rms-image-modal');
@@ -1477,7 +1472,7 @@ class RMSImageUploader {
      */
     addCacheBusting(url) {
         if (!url) return url;
-        
+
         const cacheBuster = Date.now() + Math.floor(Math.random() * 10000);
         return url + (url.includes('?') ? '&' : '?') + `v=${cacheBuster}`;
     }
@@ -1487,7 +1482,7 @@ class RMSImageUploader {
      */
     decodeHtmlEntities(str) {
         if (!str) return str;
-        
+
         const textarea = document.createElement('textarea');
         textarea.innerHTML = str;
         return textarea.value;
@@ -1549,18 +1544,6 @@ class RMSImageUploader {
         }
     }
 }
-
-/**
- * Resolve custom upload base from data attributes or global prefix
- */
-RMSImageUploader.prototype.getCustomUploadBase = function(container) {
-    const input = container.querySelector ? container.querySelector('input[type="file"]') : null;
-    if (input && input.dataset && input.dataset.uploadUrlBase) {
-        return input.dataset.uploadUrlBase.replace(/\/$/, '');
-    }
-    const prefix = window.cmsAdminPrefix || '/admin';
-    return `${prefix.replace(/\/$/, '')}/${this.getControllerName()}`;
-};
 
 // Global instance
 window.RMSImageUploader = RMSImageUploader;

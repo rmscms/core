@@ -97,6 +97,41 @@ use RMS\Core\Helpers\RouteHelper;
 RouteHelper::adminResource(UsersController::class, 'admin.users');
 ```
 
+## 🧭 Database Shift (db:shift)
+
+A safe tool to align schema from database A ➜ B without touching sensitive tables like users and settings.
+
+- Vendor-aware migration scanning via Laravel Migrator (supports loadMigrationsFrom)
+- Smart-skip logic:
+  - If a migration contains Schema::create and the table already exists on B ➜ mark that migration as Ran (skip execution)
+  - If a migration only adds columns and all target columns already exist on B ➜ mark as Ran
+  - Real column changes (alter/change) will run when needed
+- --dry-run to simulate changes (no writes) and print a final report
+
+Usage:
+```bash
+php artisan db:shift --a=DB_A --b=DB_B --b-connection=mysql_b --apply --dry-run
+```
+Options:
+- --a: source database name (A)
+- --b: target database name (B)
+- --b-connection: Laravel connection name for B (default: mysql)
+- --ignore: protected tables list (default: users,settings)
+- --ignore-migrations: additional migration names to mark as Ran
+- --apply: perform safe apply (mark and then migrate)
+- --dry-run: simulate with --pretend
+
+Outputs:
+- Table comparison (Only in A / Only in B)
+- Column diff summary (Only in A/B, Changed)
+- Plan (safe suggestions) with icons and notes
+- Final report: Fixed, SmartCreate, SmartAdd, Executed/Planned
+
+Dry-run example:
+```bash
+php artisan db:shift --a=iras --b=iras-new --b-connection=mysql_b --apply --dry-run
+```
+
 ## 📚 Documentation
 
 ### Core Concepts

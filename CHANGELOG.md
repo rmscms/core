@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.0] - 2025-10-04
+
+### 🚀 Added
+- db:shift Artisan command for safe schema synchronization between databases (A ➜ B)
+  - Smart-skip for Schema::create when table already exists on B (marks migration as Ran)
+  - Smart-skip for add-column-only migrations when columns already exist on B (marks as Ran)
+  - Vendor-aware scanning via Laravel Migrator (supports loadMigrationsFrom paths)
+  - Fixed protected list for users/settings migrations (always Ran, never executed)
+  - --dry-run support using --pretend (simulate without changes)
+  - Final report summary table (what was marked Ran vs executed/planned)
+
+### 🎨 Enhanced
+- Pretty plan tables with icons and protected notes for clarity
+
+### 🏗️ Technical
+- Command registered in CoreServiceProvider
+- PSR-4 autoload ready for Console\Commands namespace
+
+---
+
 ## [1.2.0] - 2025-09-30
 
 ### 🚀 Added
