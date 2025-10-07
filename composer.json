@@ -1,7 +1,6 @@
 {
     "name": "rmscms/core",
 "description": "A Core cms package for Laravel applications",
-"version": "1.3.0",
     "type": "library",
     "license": "MIT",
     "authors": [
