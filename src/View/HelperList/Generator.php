@@ -169,7 +169,11 @@ class Generator
      */
     public function builder(): Database
     {
-        $database = new Database($this->fields, $this->list->table());
+        // Filter out fields that should be skipped from database select (virtual/display-only)
+        $databaseFields = array_filter($this->fields, function($f){
+            return !($f instanceof \RMS\Core\Data\Field) || ($f instanceof \RMS\Core\Data\Field && $f->skip_database === false);
+        });
+        $database = new Database($databaseFields, $this->list->table());
         $this->list->query($database->sql);
         if ($this->list instanceof ShouldFilter) {
             // Apply cached filters from user input, not static filter definitions

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.1] - 2025-10-07
+
+### 🔧 Fixed
+- Respect `skipDatabase()` for list columns in View Helper List Generator
+  - Prevents virtual/display-only fields (e.g., custom actions column) from being selected in SQL
+  - Fixes SQL errors like `Unknown column 'a.actions' in 'field list'`
+  - Aligns behavior with Data List Generator which already filtered skipDatabase fields
+
+### 🏗️ Technical
+- Filter `skip_database` fields in `RMS\\Core\\View\\HelperList\\Generator::builder()` before creating `Database`
+- Backward compatible; no API changes
+
+---
+
 ## [1.3.0] - 2025-10-04
 
 ### 🚀 Added

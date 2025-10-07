@@ -1,5 +1,6 @@
 # RMS Core Package
 
+[![Version](https://img.shields.io/badge/version-1.3.1-success.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PHP Version](https://img.shields.io/badge/php-%5E8.1-blue.svg)](https://php.net/)
 [![Laravel](https://img.shields.io/badge/laravel-%5E11.0-red.svg)](https://laravel.com/)
