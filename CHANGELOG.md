@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.7] - 2025-10-20
+
+### 🔧 Fixed
+- **Per-Page Pagination**: Fixed per_page selector not working from URL query string
+  - `getPerPage()` now checks request parameter first before reading from cache
+  - Automatically caches new per_page value when changed via dropdown
+  - Fixes issue where changing "نمایش" dropdown had no effect on list items count
+  - Query flow: URL `?per_page=50` → Cache → Display
+  - **Affected File**: `src/Traits/List/PerPageList.php` (lines 71-92)
+  - **Issue**: Dropdown value was sent in URL but never read, causing pagination to ignore user selection
+  - **Solution**: Added request parameter check with validation before cache lookup
+
+### 🏗️ Technical
+- Enhanced `PerPageList::getPerPage()` with request parameter detection
+- Added range validation (1-100) for per_page values from request
+- Maintains backward compatibility with existing cache-only behavior
+
+---
+
 ## [1.3.5] - 2025-10-20
 
 ### 🚀 Added
