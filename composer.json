@@ -11,7 +11,7 @@
     ],
     "require": {
         "rmscms/helper": "^1.0",
-        "rmscms/telegram": "^1.0",
+        "rmscms/telegram": "^1.2",
         "rmscms/pdf": "^1.0"
     },
     "require-dev": {
