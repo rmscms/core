@@ -54,7 +54,7 @@
           '</div>' +
           '<div class="flex-fill">' +
             (it.title ? ('<div class="fw-semibold">' + escapeHtml(it.title) + '</div>') : '') +
-            '<div class="text-muted mt-1">' + escapeHtml(it.message || '') + '</div>' +
+            '<div class="text-muted mt-1 notification-content">' + (it.message || '') + '</div>' +
             '<div class="d-flex justify-content-end mt-1">' +
               '<div class="fs-sm text-muted">' + escapeHtml(it.created_at_persian || formatTime(it.created_at)) + '</div>' +
             '</div>' +

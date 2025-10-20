@@ -140,4 +140,20 @@ return [
         'dependencies' => ['moment'],
         'enabled' => false  // Disabled by default
     ],
+    'qrcode'=>[
+        'js' => ['qrcode.min.js'],
+        'dependencies' => [],
+        'enabled' => true,
+        'plugin_path'=>'qrcode',
+    ],
+
+    'confirm-modal' => [
+        'js' => ['confirm-modal.js'],
+        'css' => [],
+        'dependencies' => [], // No dependencies - vanilla JS
+        'load_order' => 1,  // Load early for use in other scripts
+        'plugin_path' => 'confirm-modal',
+        'enabled' => true,
+        'description' => 'Beautiful, reusable confirmation modals with dark theme support'
+    ],
 ];

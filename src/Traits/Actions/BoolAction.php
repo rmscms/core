@@ -207,12 +207,28 @@ trait BoolAction
     public function boolFieldUrl($id, string $key): string
     {
         // Get route parameter name (e.g., 'user' from UsersController)
-        $routeParameter = property_exists($this, 'route_parameter') ? $this->route_parameter : null;
+        // Try method first, then property
+        if (method_exists($this, 'routeParameter')) {
+            $routeParameter = $this->routeParameter();
+        } elseif (property_exists($this, 'route_parameter')) {
+            $routeParameter = $this->route_parameter;
+        } else {
+            $routeParameter = null;
+        }
         
-        // Get prefix route (e.g., 'admin.') - اگر خالی باشد، خالی باقی می‌ماند
+        // Get prefix route (e.g., 'admin.') - اگر خالی باشد، خودکار تشخیص می‌دهیم
         $prefixRoute = '';
         if (property_exists($this, 'prefix_route') && !empty($this->prefix_route)) {
             $prefixRoute = rtrim($this->prefix_route, '.') . '.';
+        } else {
+            // Auto-detect from current route (e.g., 'admin' from 'admin.wireguard.index')
+            $currentRoute = \Illuminate\Support\Facades\Route::currentRouteName();
+            if ($currentRoute && str_contains($currentRoute, '.')) {
+                $parts = explode('.', $currentRoute);
+                if (count($parts) >= 2) {
+                    $prefixRoute = $parts[0] . '.';
+                }
+            }
         }
         
         // Get base route (e.g., 'users')
@@ -222,7 +238,7 @@ trait BoolAction
             // Auto-detect from class name
             $controllerName = class_basename($this);
             $resourceName = strtolower(str_replace('Controller', '', $controllerName));
-            $routeParameter = \Illuminate\Support\Str::singular($resourceName);
+            $routeParameter = $routeParameter ?: \Illuminate\Support\Str::singular($resourceName);
             $baseRoute = $baseRoute ?: $resourceName;
         }
         

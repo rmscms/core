@@ -183,7 +183,7 @@
                                             @endphp
 
                                             {{-- Boolean Toggle as AJAX link (global style) --}}
-                                            <a href="{{ $toggleUrl }}" class="ajax-bool" title="{{ $isActive ? 'کلیک برای غیرفعال کردن' : 'کلیک برای فعال کردن' }}">
+                                            <a data-toggle-url="{{ $toggleUrl }}" class="toggle-btn" title="{{ $isActive ? 'کلیک برای غیرفعال کردن' : 'کلیک برای فعال کردن' }}">
                                                 <button type="button" class="btn {{ $isActive ? 'btn-success' : 'btn-danger' }} btn-sm">
                                                     <i class="ph-{{ $isActive ? 'check' : 'x' }}"></i>
                                                 </button>
@@ -222,11 +222,11 @@
                                 {{-- Actions Column --}}
                                 @if($listData['actions']['has_row_actions'] ?? false)
                                     <td class="text-center align-middle">
-                                        <div class="d-flex align-self-center dropdown">
+                                        <div class="d-flex align-self-center dropdown position-static">
                                             <a href="#" class="text-body d-inline-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i class="ph-list"></i>
                                             </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
+                                            <div class="dropdown-menu dropdown-menu-end" style="position: absolute !important;">
                                                 @foreach($listData['actions']['row_actions'] as $action)
                                                     @php
                                                         // Check if this action should be skipped for current row
@@ -483,6 +483,21 @@
             text-align: center;
             margin-left: 0.5rem;
             font-size: 0.875rem;
+        }
+
+        /* Fix dropdown overflow issue */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: visible !important;
+        }
+
+        .table tbody tr td .dropdown {
+            position: static !important;
+        }
+
+        .table tbody tr td .dropdown-menu {
+            position: absolute !important;
+            z-index: 1050 !important;
         }
 
         /* Custom pagination styles to override default Laravel pagination */

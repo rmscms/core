@@ -7,6 +7,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.5] - 2025-10-20
+
+### 🚀 Added
+- **Confirmation Modal**: New confirm-modal plugin for safe deletion operations
+  - Enhanced list UI with modal-based confirmation dialogs
+  - Prevents accidental bulk deletions with clear confirmation flow
+  - Added modal plugin assets under `assets/plugins/confirm-modal/`
+- **DbDiff Command**: New database schema comparison command
+  - Compare schema between local and remote databases
+  - Generate migration files based on differences
+  - Helpful for development and debugging
+
+### 🎨 Enhanced
+- **List UI**: Improved confirmation workflow for delete operations
+  - Better visual feedback with modal dialogs
+  - Enhanced list.js with confirmation handling
+  - Consistent delete action flows across all controllers
+- **Plugin System**: Added confirm-modal to core plugins
+  - Auto-registered plugin system for modals
+  - Enhanced config/plugins.php with new plugin configuration
+- **Notifications**: Improved notification display and handling
+  - Enhanced notification.js with better state management
+  - Support for HTML-formatted notification content
+  - Better error handling and fallbacks
+
+### 🔧 Fixed
+- **BoolAction**: Further improvements to route parameter detection
+  - Enhanced compatibility with various controller types
+  - Better fallback mechanisms for route generation
+  - Fixed edge cases in parameter resolution
+
+### 📚 Documentation
+- Added DB_SHIFT_COMMAND.md comprehensive documentation
+- Added README_DB_SHIFT.md migration guide
+- Added comprehensive docs/refs/ reference documentation
+- Database schema shift command documentation
+
+### 🏗️ Technical
+- Database comparison tools (DbDiffCommand)
+- Enhanced Console Commands namespace
+- Improved plugin registration system
+- Better event handling for UI confirmations
+
+---
+
+## [1.3.4] - 2025-10-19
+
+### 🐛 Fixed
+- **BoolAction**: Fixed `boolFieldUrl()` method not recognizing `routeParameter()` method in controllers
+  - Method now checks for `routeParameter()` method first before falling back to `route_parameter` property
+  - Added auto-detection of route prefix (e.g., `admin.`) from current route name
+  - Fixed "Missing required parameter" error for toggle routes in controllers with custom route parameters
+  - **Issue**: Controllers like `WirguardController` and `WireZeroController` that implement `routeParameter()` method were causing URL generation failures when toggling boolean fields
+  - **Solution**: Modified parameter detection logic to prioritize method calls over property access
+  - **Affected Code**: `src/Traits/Actions/BoolAction.php` (lines 207-254)
+
+---
+
+## [1.3.3] - 2025-10-17
+
+### 🎨 Enhanced
+- **Notifications System**: HTML formatting support for rich notification messages
+  - NotificationsController now returns both HTML and plain text versions of messages
+  - Added `message_plain` field with `strip_tags()` for plain text compatibility
+  - UI now renders HTML content directly for better formatting (bold, emojis, line breaks)
+  - Removed `escapeHtml()` from message rendering in notification.js
+  - Added `.notification-content` CSS class for styling notification messages
+  - Supports rich formatting in ticket notifications and other notification types
+
+### 🏗️ Technical
+- Updated `notification.js` to render HTML messages without escaping
+- Backend provides both `message` (HTML) and `message_plain` (text) for flexibility
+- Backward compatible - existing plain text notifications still work
+- Persian date formatting preserved in `created_at_persian` field
+
+---
+
 ## [1.3.1] - 2025-10-07
 
 ### 🔧 Fixed

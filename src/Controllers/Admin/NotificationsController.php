@@ -76,7 +76,8 @@ class NotificationsController extends AdminController implements HasList, Should
                 return [
                     'id' => $n->id,
                     'title' => $n->title,
-                    'message' => $n->message,
+                    'message' => $n->message, // Keep HTML as-is for rich formatting
+                    'message_plain' => strip_tags($n->message), // Plain text version
                     'category' => $n->category,
                     'created_at' => $n->created_at,
                     'created_at_persian' => \RMS\Helper\persian_date($n->created_at, 'Y/m/d H:i'),

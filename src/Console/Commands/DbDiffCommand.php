@@ -19,11 +19,19 @@ use Illuminate\Database\Migrations\Migrator;
  * - Dry-run برای تست بدون تغییر
  * - گزارش جامع از تغییرات
  * 
- * @package RMS\Core\Console\Commands
- * @version 1.0.0
- * @author RMS Team
+ * @package App\Console\Commands
+ * @version 1.1.0 - Smart Single DB Mode
+ * @author IRAS Team
+ * @updated 2025-10-18
+ * 
+ * Features:
+ * - Single database mode support
+ * - Smart migration detection
+ * - Dry-run by default
+ * - Automatic schema comparison
+ * - Protected tables handling
  */
-class DbShiftCommand extends Command
+class DbDiffCommand extends Command
 {
     /**
      * نام‌های جایگزین برای دستور
@@ -54,18 +62,17 @@ class DbShiftCommand extends Command
      * Signature دستور با تمام گزینه‌لا
      */
     protected $signature = 'db:shift 
-                            {--a= : Source database name (نام دیتابیس مبدا)} 
-                            {--b= : Target database name (نام دیتابیس مقصد)} 
-                            {--ignore=users,settings : Comma-separated tables to ignore (جداول محافظت شده)} 
-                            {--ignore-migrations= : Additional migrations to mark as Ran (مایگریشن‌های اضافی)} 
-                            {--b-connection=mysql_b : Laravel connection for target (نام connection)} 
-                            {--apply : Apply changes to target database (اعمال تغییرات)} 
-                            {--dry-run : Simulate without changes (test mode) (تست بدون تغییر)} 
-                            {--details : Show detailed column diffs (جزئیات کامل)}';
+                            {--a= : Source database name (default: DB_DATABASE)} 
+                            {--b= : Target database name (default: DB_DATABASE)} 
+                            {--ignore=users,settings : Comma-separated tables to ignore} 
+                            {--ignore-migrations= : Additional migrations to mark as Ran} 
+                            {--b-connection=mysql : Laravel connection for target} 
+                            {--apply : Apply changes to database (default is dry-run)} 
+                            {--details : Show detailed column diffs}';
     /**
-     * توضیحات دستور
+     * Command description
      */
-    protected $description = 'Safely shift database schema from A to B with smart migration detection and protected tables support';
+    protected $description = 'Smart migration runner - checks existing tables/columns and skips duplicates (default: dry-run, use --apply to execute)';
 
     /**
      * اجرای دستور
@@ -80,9 +87,30 @@ class DbShiftCommand extends Command
             $this->error('Please specify --a and --b database names or set DB_DATABASE.');
             return self::FAILURE;
         }
+        
+        // Single database mode: if A and B are same, run smart migration only
+        $singleDbMode = ($dbA === $dbB);
+        $isDryRun = !$this->option('apply'); // Default is dry-run unless --apply is specified
+        
+        if ($singleDbMode) {
+            $this->info('🔍 Single DB mode - Smart migration only');
+        }
+        
+        if ($isDryRun) {
+            $this->warn('⚠️  DRY-RUN MODE: No changes will be made to database');
+            $this->warn('    Use --apply flag to execute migrations');
+        }
+        
         $ignore = collect(explode(',', (string)$this->option('ignore')))->map(fn($x)=>trim($x))->filter()->values()->all();
 
         $this->line("Comparing schemas: A={$dbA} vs B={$dbB}");
+        
+        // Skip comparison in single DB mode - go straight to smart migrations
+        if ($singleDbMode) {
+            $this->newLine();
+            $this->info('==> Skipping schema comparison - Running smart migrations...');
+            return $this->runSmartMigrations($dbB, $isDryRun);
+        }
 
         $tablesA = $this->getTables($dbA);
         $tablesB = $this->getTables($dbB);
@@ -444,5 +472,80 @@ class DbShiftCommand extends Command
             $this->info('🧠 Smart-skip (all target columns already exist): marking as Ran -> '.implode(', ', array_keys($toMark)));
             $this->markMigrationsAsRan($dbB, $bConn, array_keys($toMark), 'smartAdd');
         }
+    }
+    
+    /**
+     * Run smart migrations in single database mode
+     * 
+     * @param string $dbName Database name
+     * @param bool $isDryRun Dry run mode (no actual changes)
+     * @return int Exit code
+     */
+    protected function runSmartMigrations(string $dbName, bool $isDryRun = true): int
+    {
+        $bConn = $this->option('b-connection') ?: 'mysql';
+        
+        // Merge hard-coded fixed ignores with any extra provided via option
+        $ignoredMigrations = array_values(array_unique(array_merge(
+            $this->fixedIgnoreMigrations,
+            collect(explode(',', (string)$this->option('ignore-migrations')))
+                ->map(fn($x)=>trim($x))->filter()->values()->all()
+        )));
+
+        // 1) Ensure migrations table exists
+        $this->info('1/4 Checking migrations table...');
+        $this->ensureMigrationsTableExists($bConn);
+
+        // 2) Mark ignored migrations as Ran
+        $this->info('2/4 Marking protected migrations...');
+        $this->markMigrationsAsRan($dbName, $bConn, $ignoredMigrations, 'fixed');
+
+        // 3) Smart-skip: create table migrations
+        $this->info('3/4 Smart-skip: checking existing tables...');
+        $this->smartSkipCreateTableMigrations($dbName, $bConn);
+
+        // 4) Smart-skip: add column migrations
+        $this->info('4/4 Smart-skip: checking existing columns...');
+        $this->smartSkipAddColumnMigrations($dbName, $bConn);
+
+        // 5) Run remaining migrations
+        $this->newLine();
+        $this->info('Running remaining migrations...');
+        $migrateArgs = [
+            '--database' => $bConn,
+        ];
+        
+        if ($isDryRun) {
+            $migrateArgs['--pretend'] = true;
+            $this->warn('>>> DRY-RUN: Simulating migrations (no actual changes)');
+        } else {
+            $migrateArgs['--force'] = true;
+            $this->info('>>> APPLYING migrations to database...');
+        }
+        
+        $code = Artisan::call('migrate', $migrateArgs);
+        $out = Artisan::output();
+        $this->output->write($out);
+        
+        // Parse executed migrations
+        $this->collectExecutedFromOutput($out, $isDryRun);
+        
+        if ($code !== 0) {
+            $this->error('Migration failed!');
+            return self::FAILURE;
+        }
+
+        // Final report
+        $this->printFinalReport($isDryRun);
+        
+        if ($isDryRun) {
+            $this->newLine();
+            $this->info('==> DRY-RUN completed successfully');
+            $this->info('    Run with --apply flag to execute migrations');
+        } else {
+            $this->info('==> SUCCESS! All migrations applied to database');
+        }
+        
+        return self::SUCCESS;
     }
 }

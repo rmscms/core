@@ -21,7 +21,7 @@ $(document).ready(function() {
         // Update select all checkbox
         $selectAll.prop('checked', allChecked);
         $selectAll.prop('indeterminate', !allChecked && !noneChecked);
-        
+
         updateBatchActionsButton();
     });
 
@@ -33,26 +33,26 @@ $(document).ready(function() {
     // ======================================
     // AJAX Toggle Functionality for Boolean Fields
     // ======================================
-    
+
     // Handle toggle button clicks
     $(document).on('click', '.toggle-btn', function(e) {
         e.preventDefault();
-        
+
         const $btn = $(this);
         const toggleUrl = $btn.data('toggle-url');
-        
+
         if (!toggleUrl) {
             console.error('Toggle URL not found');
             return;
         }
-        
+
         // Prevent double clicks
         if ($btn.hasClass('toggling')) {
             return;
         }
-        
+
         $btn.addClass('toggling');
-        
+
         // Make AJAX request
         $.ajax({
             url: toggleUrl,
@@ -62,23 +62,23 @@ $(document).ready(function() {
                 if (response.success) {
                     // Update button state based on new value
                     const newValue = response.data.value;
-                    
+
                     if (newValue) {
                         // Active state - Limitless style
-                        $btn.removeClass('btn-light')
+                        $btn.find('button').removeClass('btn-danger')
                             .addClass('btn-success')
                             .find('i')
-                            .removeClass('ph-x text-muted')
+                            .removeClass('ph-x text-white')
                             .addClass('ph-check text-white');
                     } else {
                         // Inactive state - Limitless style
-                        $btn.removeClass('btn-success')
-                            .addClass('btn-light')
+                        $btn.find('button').removeClass('btn-success')
+                            .addClass('btn-danger')
                             .find('i')
                             .removeClass('ph-check text-white')
-                            .addClass('ph-x text-muted');
+                            .addClass('ph-x');
                     }
-                    
+
                     // Show success notification
                     if (response.message) {
                         showNotification(response.message, 'success', 3000);
@@ -98,7 +98,7 @@ $(document).ready(function() {
             }
         });
     });
-    
+
     // Confirmation modal using jQuery
     $('#confirmModal').on('show.bs.modal', function(event) {
         const $button = $(event.relatedTarget);
@@ -114,7 +114,7 @@ $(document).ready(function() {
 
             // Update method based on action
             let $methodInput = $form.find('input[name="_method"]');
-            
+
             if (actionMethod && actionMethod.toUpperCase() !== 'POST') {
                 // For DELETE, PUT, PATCH methods - ensure _method input exists
                 if ($methodInput.length === 0) {
