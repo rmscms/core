@@ -70,6 +70,21 @@ trait PerPageList
      */
     public function getPerPage(): int
     {
+        // اول بررسی کنیم آیا توی request هست per_page
+        $requestPerPage = request('per_page');
+        
+        if ($requestPerPage && is_numeric($requestPerPage)) {
+            $perPage = (int) $requestPerPage;
+            
+            // بررسی محدوده مجاز
+            if ($perPage >= 1 && $perPage <= $this->maxPerPage) {
+                // کش کردن مقدار جدید
+                $this->cachePerPageValue($this, $perPage);
+                return $perPage;
+            }
+        }
+        
+        // اگر توی request نبود، از کش بخون
         $cached = $this->getCachedPerPage($this, !$this->cachePerPage());
 
         return $cached ?: $this->defaultPerPage;
