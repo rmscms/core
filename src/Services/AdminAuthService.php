@@ -67,7 +67,7 @@ class AdminAuthService
     }
 
     /**
-     * Handle failed login attempt.
+     * Handle failed login attempt with smart error messages.
      *
      * @param Request $request
      * @param string $loginField
@@ -78,14 +78,20 @@ class AdminAuthService
     {
         $this->rateLimiter->incrementRateLimit($request);
         
+        // پیدا کردن ادمین با اطلاعات ورودی
+        $loginValue = $request->input($loginField);
+        $admin = Admin::where($loginField, $loginValue)->first();
+        
+        // تعیین پیام خطای دقیق
+        $errorMessage = $this->getDetailedErrorMessage($admin, $request);
+        
         Log::warning('Admin login failed', [
             'login_field' => $loginField,
-            'login_value' => $request->input($loginField),
+            'login_value' => $loginValue,
+            'reason' => $errorMessage,
             'ip' => $request->ip(),
             'user_agent' => $request->userAgent()
         ]);
-        
-        $errorMessage = trans('auth.failed');
         
         if ($request->expectsJson()) {
             return response()->json([
@@ -98,6 +104,36 @@ class AdminAuthService
         throw ValidationException::withMessages([
             $loginField => $errorMessage
         ]);
+    }
+
+    /**
+     * دریافت پیام خطای دقیق بر اساس وضعیت ادمین
+     *
+     * @param Admin|null $admin
+     * @param Request $request
+     * @return string
+     */
+    protected function getDetailedErrorMessage(?Admin $admin, Request $request): string
+    {
+        // اگر ادمین پیدا نشد
+        if (!$admin) {
+            $loginField = config('cms.admin_login_field', 'email');
+            $fieldName = $loginField === 'mobile' ? 'شماره موبایل' : 'ایمیل';
+            return "این {$fieldName} در سیستم ثبت نشده است ❌";
+        }
+        
+        // اگر ادمین غیرفعال است
+        if (!$admin->isActive()) {
+            return "حساب کاربری شما غیرفعال شده است. با مدیر سیستم تماس بگیرید 🚫";
+        }
+        
+        // اگر ادمین حذف شده (soft deleted)
+        if ($admin->trashed()) {
+            return "حساب کاربری شما حذف شده است 🗑️";
+        }
+        
+        // پسورد اشتباه است
+        return "رمز عبور اشتباه است 🔑";
     }
 
     /**
