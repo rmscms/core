@@ -30,17 +30,7 @@ Route::middleware(['web'])
             Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
             // Dashboard
-            Route::get('/dashboard', function () {
-                return view('cms::admin.pages.dashboard.index', [
-                    'title' => trans('admin.dashboard'),
-                    'admin' => auth('admin')->user()
-                ]);
-            })->name('dashboard');
-
-            // Redirect admin root to dashboard
-            Route::get('/', function () {
-                return redirect()->route('admin.dashboard');
-            });
+            
 
             // Profile route - redirects to edit current admin
             Route::get('/profile', function () {
