@@ -2,7 +2,6 @@
 
 namespace RMS\Core\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use RMS\Core\Contracts\Actions\ChangeBoolField;
 use RMS\Core\Contracts\Batch\HasBatch;
@@ -21,6 +20,7 @@ use RMS\Core\Models\Admin;
 use RMS\Core\Traits\Controllers\UploadFileControllerHelper;
 use Illuminate\Support\Facades\Hash;
 use RMS\Core\Data\UploadConfig;
+use RMS\Core\Controllers\Admin\ProjectAdminController;
 
 /**
  * AdminsController for managing admin users.

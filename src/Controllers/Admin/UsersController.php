@@ -2,7 +2,6 @@
 
 namespace RMS\Core\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use RMS\Core\Data\UploadConfig;
@@ -22,6 +21,7 @@ use RMS\Core\Data\BatchAction;
 use RMS\Core\Data\Field;
 use RMS\Core\Models\User;
 use RMS\Core\Traits\Controllers\UploadFileControllerHelper;
+use RMS\Core\Controllers\Admin\ProjectAdminController;
 
 /**
  * Users Controller for Admin Panel.

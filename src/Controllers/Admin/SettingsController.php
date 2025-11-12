@@ -2,13 +2,13 @@
 
 namespace RMS\Core\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use RMS\Core\Contracts\Form\HasForm;
 use RMS\Core\Contracts\List\HasList;
 use RMS\Core\Data\Field;
 use RMS\Core\Models\Setting;
 use Illuminate\Http\RedirectResponse;
+use RMS\Core\Controllers\Admin\ProjectAdminController;
 
 /**
  * SettingsController for managing application settings.

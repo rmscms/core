@@ -2,7 +2,6 @@
 
 namespace RMS\Core\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
