@@ -170,24 +170,20 @@ class InstallCommand extends Command
      */
     protected function publishProjectAdminController(): array
     {
-        $filesystem = app(Filesystem::class);
-        $stubPath = dirname(__DIR__, 2) . '/stubs/Admin/AdminController.stub';
-        $targetPath = app_path('Http/Controllers/Admin/AdminController.php');
         $stepLabel = 'Publish Project AdminController';
 
-        if (!$filesystem->exists($stubPath)) {
-            return ['step' => $stepLabel, 'status' => false, 'message' => 'Stub file not found'];
-        }
-
-        $filesystem->ensureDirectoryExists(dirname($targetPath));
-
-        if ($filesystem->exists($targetPath) && !$this->option('force')) {
-            return ['step' => $stepLabel, 'status' => true, 'message' => 'Skipped (file already exists)'];
-        }
-
         try {
-            $filesystem->put($targetPath, $filesystem->get($stubPath));
-            return ['step' => $stepLabel, 'status' => true, 'message' => 'Created AdminController stub'];
+            $parameters = $this->option('force') ? ['--force' => true] : [];
+            $exitCode = Artisan::call('rms:publish-admin-controller', $parameters);
+            $output = trim(Artisan::output());
+
+            if ($exitCode === Command::SUCCESS) {
+                $message = $output !== '' ? $output : 'Published AdminController stub';
+                return ['step' => $stepLabel, 'status' => true, 'message' => $message];
+            }
+
+            $message = $output !== '' ? $output : 'Unknown error while publishing AdminController stub';
+            return ['step' => $stepLabel, 'status' => false, 'message' => $message];
         } catch (\Exception $e) {
             return ['step' => $stepLabel, 'status' => false, 'message' => $e->getMessage()];
         }

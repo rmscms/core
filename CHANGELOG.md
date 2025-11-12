@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.14] - 2025-11-12
+
+### 🚀 Added
+- `rms:publish-admin-controller` artisan command publishes the project AdminController stub on demand (`--force` supported) and is registered automatically via the core service provider.
+
+### 🛠️ Fixed
+- `rms:install` now delegates stub generation to the dedicated publish command, ensuring consistent behavior between automated install and manual execution.
+- AdminController stub loads dashboard search assets unconditionally while keeping JS variable injection behind the feature flag, matching project expectations.
+
+---
+
 ## [1.3.13] - 2025-11-12
 
 ### 🛠️ Fixed

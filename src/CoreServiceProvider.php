@@ -14,6 +14,7 @@ use RMS\Core\Services\NotificationsService;
 use RMS\Core\Console\InstallCommand;
 use RMS\Core\Console\Commands\ProcessDueReminders;
 use RMS\Core\Console\Commands\SeedTestNotifications;
+use RMS\Core\Console\Commands\PublishAdminControllerStub;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -65,6 +66,7 @@ class CoreServiceProvider extends ServiceProvider
             ProcessDueReminders::class,
             SeedTestNotifications::class,
             \RMS\Core\Console\Commands\DbShiftCommand::class,
+            PublishAdminControllerStub::class,
         ]);
 
         // Register custom Blade directives

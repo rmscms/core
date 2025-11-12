@@ -34,14 +34,12 @@ abstract class AdminController extends CoreAdminController
     protected function beforeRenderView(): void
     {
         parent::beforeRenderView();
-
+        $this->view
+            ->withJs('search.js')
+            ->withJs('fonts.js')
+            ->withCss('theme-font.css');
 
         if (config('cms.admin_controller.enable_dashboard_search_assets', false)) {
-            $this->view
-                ->withJs('search.js')
-                ->withJs('fonts.js')
-                ->withCss('theme-font.css');
-
             $this->view->withJsVariables([
                 'searchEndPoint' => [
                     'search' => route('admin.search'),
