@@ -91,10 +91,10 @@
 
                 <x-cms::menu-item
                     title="{{ trans('admin.dashboard') ?: 'داشبورد' }}"
-                    url="/admin"
+                    url="{{ (config('cms.dashboard.enabled', true) && \Illuminate\Support\Facades\Route::has('admin.dashboard')) ? route('admin.dashboard') : url(config('cms.admin_url', 'admin')) }}"
                     icon="ph-house"
                     :routes="['admin.dashboard']"
-                    urlPattern="admin"
+                    urlPattern="admin/dashboard"
                     description="{{ $dashboardDescription }}"
                 />
 

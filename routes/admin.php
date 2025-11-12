@@ -30,8 +30,8 @@ Route::middleware(['web'])
 
             // Dashboard
 				if (config('cms.dashboard.enabled', true)) {
-					Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-					Route::get('/dashboard', [DashboardController::class, 'index']);
+					Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+					Route::get('/', fn () => redirect()->route('admin.dashboard'));
 				}
 
 				// Private file serve route (admin-only)

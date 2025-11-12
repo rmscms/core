@@ -3,9 +3,9 @@
 namespace RMS\Core\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use RMS\Core\Controllers\Admin\AdminController;
+use RMS\Core\Controllers\Admin\ProjectAdminController;
 
-class DashboardController extends AdminController
+class DashboardController extends ProjectAdminController
 {
 	/**
 	 * Required by AdminController (not used for dashboard data).

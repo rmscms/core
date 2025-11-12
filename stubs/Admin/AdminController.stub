@@ -35,6 +35,7 @@ abstract class AdminController extends CoreAdminController
     {
         parent::beforeRenderView();
 
+
         if (config('cms.admin_controller.enable_dashboard_search_assets', false)) {
             $this->view
                 ->withJs('search.js')

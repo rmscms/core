@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.13] - 2025-11-12
+
+### 🛠️ Fixed
+- Panel navigation now resolves dashboard URLs via `route('admin.dashboard')` across sidebar/menu components, preventing fallbacks to `/admin` on projects with custom admin prefixes.
+- Core admin route group redirects `/admin` to the named dashboard route while keeping `/admin/dashboard` canonical and named.
+
+### 🏗️ Technical
+- `DashboardController` now extends `ProjectAdminController`, ensuring installer safety before the published stub exists.
+- Restored conditional registration of dashboard search assets in the published `AdminController` stub so projects opt-in through config.
+
+---
+
 ## [1.3.12] - 2025-11-12
 
 ### 🛠️ Fixed
