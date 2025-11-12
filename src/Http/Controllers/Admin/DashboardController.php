@@ -31,19 +31,12 @@ class DashboardController extends AdminController
 		$this->title(config('cms.dashboard.title', 'داشبورد'));
 
 		// Use user templates (custom_page pattern) and render from project views
-		$this->useUserTemplates();
+		//$this->useUserTemplates();
 
-		// Resolve template from config to a relative user template path (default: pages.dashboard)
-		$cfg = (string) config('cms.dashboard.view', 'pages.dashboard');
-		$tpl = $cfg;
-		if (str_starts_with($cfg, 'cms::admin.')) {
-			$tpl = substr($cfg, strlen('cms::admin.'));
-		} elseif (str_starts_with($cfg, 'admin.')) {
-			$tpl = substr($cfg, strlen('admin.'));
-		}
+
 
 		$this->view
-			->setTpl($tpl)
+			->setTpl('dashboard')
 			->withVariables([
 				'admin' => $this->getAdmin(),
 				'meta' => [
@@ -55,7 +48,7 @@ class DashboardController extends AdminController
 			]);
 
 		// Render from user namespace (no package prefix)
-		return $this->view(false);
+		return $this->view(true);
 	}
 }
 
