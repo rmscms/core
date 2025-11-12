@@ -57,6 +57,7 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
+        // Always load core admin routes from a single entry point
         $this->loadRoutesFrom(__DIR__.'/../routes/admin.php');
 
         $this->commands([

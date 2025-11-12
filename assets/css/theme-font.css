@@ -1,0 +1,77 @@
+/* Global theme font presets using CSS variables. Apply via html[data-font="..."] */
+
+:root {
+  --font-fallback: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+/* Force Latin digits to use Inter regardless of UI font */
+@font-face {
+  font-family: 'LatinDigits';
+  src: url('inter/Inter-roman.var.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002C, U+002E; /* 0-9 , . */
+  font-style: normal;
+  font-weight: 100 900;
+}
+
+html[data-font="inter"] {
+  --font-sans-serif: 'Inter', var(--font-fallback);
+  --body-font-family: var(--font-sans-serif);
+}
+
+html[data-font="yekan"] {
+  --font-sans-serif: 'IRANYekanXFaNum', 'IRANYekanX', var(--font-fallback);
+  --body-font-family: var(--font-sans-serif);
+}
+
+html[data-font="iransans"] {
+  --font-sans-serif: 'IRANSansXFaNum-Regular', 'IRANSansX-Regular', var(--font-fallback);
+  --body-font-family: var(--font-sans-serif);
+}
+
+html[data-font="vazir"] {
+  --font-sans-serif: 'Vazirmatn-Regular', 'Vazir-Regular', var(--font-fallback);
+  --body-font-family: var(--font-sans-serif);
+}
+
+html[data-font="pinar"] {
+  --font-sans-serif: 'Pinar-Regular', var(--font-fallback);
+  --body-font-family: var(--font-sans-serif);
+}
+
+/* Ensure body uses variable */
+body { font-family: 'LatinDigits', var(--body-font-family, var(--font-sans-serif)); }
+
+/* Force chart SVG digits and colors (works with embedded m SVG) */
+.chart-content svg text {
+  font-family: 'LatinDigits', 'Inter', var(--font-fallback) !important;
+}
+.chart-content svg path[stroke]:not([stroke^="var"]) {
+  stroke: var(--bs-info, #0dcaf0) !important;
+}
+.chart-content svg path[fill]:not([fill='none']) {
+  fill: rgba(var(--bs-info-rgb, 13, 202, 240), .25) !important;
+}
+
+/* Floating gear switcher styles */
+/* Floating switcher styles kept commented for future use */
+/*#font-switcher-toggle
+  position: fixed; inset-inline-end: 14px; inset-block-end: 18px; z-index: 1049;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content center;
+  background: var(--bs-primary, #0d6efd); color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.15);
+  cursor: pointer;
+}
+#font-switcher-panel .body*/
+/*#font-switcher-panel .hdr
+
+/*#font-switcher-panel
+  position: fixed; inset-inline-end: 14px; inset-block-end: 74px; z-index: 1050;
+  width: 260px; background: var(--bs-body-bg, #fff); color: var(--bs-body-color, #333);
+  border: 1px solid rgba(0,0,0,.08); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,.12);
+  display: none;
+}
+#font-switcher-panel .hdr { padding: 10px 12px; font-weight: 600; border-bottom: 1px solid rgba(0,0,0,.06); }
+#font-switcher-panel .body { padding: 12px; }
+#font-switcher-panel .form-select { width: 100%; }
+

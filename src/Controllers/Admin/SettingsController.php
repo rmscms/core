@@ -2,6 +2,7 @@
 
 namespace RMS\Core\Controllers\Admin;
 
+use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use RMS\Core\Contracts\Form\HasForm;
 use RMS\Core\Contracts\List\HasList;
@@ -14,7 +15,7 @@ use Illuminate\Http\RedirectResponse;
  * 
  * Simple key-value settings management with caching support.
  */
-class SettingsController extends AdminController implements
+class SettingsController extends ProjectAdminController implements
     HasList,
     HasForm
 {

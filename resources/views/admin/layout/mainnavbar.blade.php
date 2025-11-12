@@ -7,7 +7,7 @@
         </div>
 
         <div class="navbar-brand flex-1 flex-lg-0">
-            <a href="{{ url('/admin') }}" class="d-inline-flex align-items-center">
+            <a href="{{ (config('cms.dashboard.enabled', true) && \Illuminate\Support\Facades\Route::has('admin.dashboard')) ? route('admin.dashboard') : url(config('cms.admin_url', 'admin')) }}" class="d-inline-flex align-items-center">
                 <span class="text-white fw-bold">{{ config('app.name', 'RMS') }}</span>
             </a>
         </div>
@@ -19,177 +19,8 @@
                     <div class="form-control-feedback-icon">
                         <i class="ph-magnifying-glass"></i>
                     </div>
-                    <div class="dropdown-menu w-100" data-color-theme="light">
-                        <button type="button" class="dropdown-item">
-                            <div class="text-center w-32px me-3">
-                                <i class="ph-magnifying-glass"></i>
-                            </div>
-                            <span>{{ trans('auth.search_everywhere', ['term' => '<span class="fw-bold">in</span>']) }}</span>
-                        </button>
-
-                        <div class="dropdown-divider"></div>
-
-                        <div class="dropdown-menu-scrollable-lg">
-                            <div class="dropdown-header">
-                                {{ trans('auth.contacts') }}
-                                <a href="#" class="float-end">
-                                    {{ trans('auth.see_all') }}
-                                    <i class="ph-arrow-circle-right ms-1"></i>
-                                </a>
-                            </div>
-
-                            <div class="dropdown-item cursor-pointer">
-                                <div class="me-3">
-                                    <img src="{{ asset(config('cms.admin_theme') . '/images/demo/users/face3.jpg') }}" class="w-32px h-32px rounded-pill" alt="">
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="fw-semibold">Christ<mark>in</mark>e Johnson</div>
-                                    <span class="fs-sm text-muted">c.johnson@awesomecorp.com</span>
-                                </div>
-                                <div class="d-inline-flex">
-                                    <a href="#" class="text-body ms-2">
-                                        <i class="ph-user-circle"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="dropdown-item cursor-pointer">
-                                <div class="me-3">
-                                    <img src="{{ asset(config('cms.admin_theme') . '/images/demo/users/face24.jpg') }}" class="w-32px h-32px rounded-pill" alt="">
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="fw-semibold">Cl<mark>in</mark>ton Sparks</div>
-                                    <span class="fs-sm text-muted">c.sparks@awesomecorp.com</span>
-                                </div>
-                                <div class="d-inline-flex">
-                                    <a href="#" class="text-body ms-2">
-                                        <i class="ph-user-circle"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="dropdown-divider"></div>
-
-                            <div class="dropdown-header">
-                                {{ trans('auth.clients') }}
-                                <a href="#" class="float-end">
-                                    {{ trans('auth.see_all') }}
-                                    <i class="ph-arrow-circle-right ms-1"></i>
-                                </a>
-                            </div>
-
-                            <div class="dropdown-item cursor-pointer">
-                                <div class="me-3">
-                                    <img src="{{ asset(config('cms.admin_theme') . '/images/brands/adobe.svg') }}" class="w-32px h-32px rounded-pill" alt="">
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="fw-semibold">Adobe <mark>In</mark>c.</div>
-                                    <span class="fs-sm text-muted">{{ trans('auth.enterprise_license') }}</span>
-                                </div>
-                                <div class="d-inline-flex">
-                                    <a href="#" class="text-body ms-2">
-                                        <i class="ph-briefcase"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="dropdown-item cursor-pointer">
-                                <div class="me-3">
-                                    <img src="{{ asset(config('cms.admin_theme') . '/images/brands/holiday-inn.svg') }}" class="w-32px h-32px rounded-pill" alt="">
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="fw-semibold">Holiday-<mark>In</mark>n</div>
-                                    <span class="fs-sm text-muted">{{ trans('auth.on_premise_license') }}</span>
-                                </div>
-                                <div class="d-inline-flex">
-                                    <a href="#" class="text-body ms-2">
-                                        <i class="ph-briefcase"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="dropdown-item cursor-pointer">
-                                <div class="me-3">
-                                    <img src="{{ asset(config('cms.admin_theme') . '/images/brands/ing.svg') }}" class="w-32px h-32px rounded-pill" alt="">
-                                </div>
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <div class="fw-semibold"><mark>IN</mark>G Group</div>
-                                    <span class="fs-sm text-muted">{{ trans('auth.perpetual_license') }}</span>
-                                </div>
-                                <div class="d-inline-flex">
-                                    <a href="#" class="text-body ms-2">
-                                        <i class="ph-briefcase"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="position-static">
-                    <a href="#" class="navbar-nav-link align-items-center justify-content-center w-40px h-32px position-absolute end-0 top-50 translate-middle-y p-0 me-1" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                        <i class="ph-faders-horizontal"></i>
-                    </a>
-
-                    <div class="dropdown-menu w-100 p-3">
-                        <div class="d-flex align-items-center mb-3">
-                            <h6 class="mb-0">{{ trans('auth.search_options') }}</h6>
-                            <a href="#" class="text-body rounded-pill ms-auto">
-                                <i class="ph-clock-counter-clockwise"></i>
-                            </a>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="d-block form-label">{{ trans('auth.category') }}</label>
-                            <label class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input" checked>
-                                <span class="form-check-label">{{ trans('auth.invoices') }}</span>
-                            </label>
-                            <label class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input">
-                                <span class="form-check-label">{{ trans('auth.files') }}</span>
-                            </label>
-                            <label class="form-check form-check-inline">
-                                <input type="checkbox" class="form-check-input">
-                                <span class="form-check-label">{{ trans('auth.users') }}</span>
-                            </label>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">{{ trans('auth.addition') }}</label>
-                            <div class="input-group">
-                                <select class="form-select w-auto flex-grow-0">
-                                    <option value="1" selected>{{ trans('auth.has') }}</option>
-                                    <option value="2">{{ trans('auth.has_not') }}</option>
-                                </select>
-                                <input type="text" class="form-control" placeholder="{{ trans('auth.enter_words') }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">{{ trans('auth.status') }}</label>
-                            <div class="input-group">
-                                <select class="form-select w-auto flex-grow-0">
-                                    <option value="1" selected>{{ trans('auth.is') }}</option>
-                                    <option value="2">{{ trans('auth.is_not') }}</option>
-                                </select>
-                                <select class="form-select">
-                                    <option value="1" selected>{{ trans('auth.active') }}</option>
-                                    <option value="2">{{ trans('auth.inactive') }}</option>
-                                    <option value="3">{{ trans('auth.new') }}</option>
-                                    <option value="4">{{ trans('auth.expired') }}</option>
-                                    <option value="5">{{ trans('auth.pending') }}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-light">{{ trans('auth.reset') }}</button>
-                            <div class="ms-auto">
-                                <button type="button" class="btn btn-light">{{ trans('auth.cancel') }}</button>
-                                <button type="button" class="btn btn-primary ms-2">{{ trans('auth.apply') }}</button>
-                            </div>
-                        </div>
+                    <div class="dropdown-menu w-100" data-color-theme="light" style="max-height: 420px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;">
+                        {{-- Results injected dynamically by admin search script --}}
                     </div>
                 </div>
             </div>
@@ -264,6 +95,20 @@
                     </div>
 
                     <div class="dropdown-divider"></div>
+
+                    <div class="dropdown-item-text py-2">
+                        <label class="form-label mb-1">فونت رابط کاربری</label>
+                        <select id="navbarFontSelect" class="form-select form-select-sm">
+                            <option value="yekan">IRANYekanX FaNum</option>
+                            <option value="iransans">IRANSansX FaNum</option>
+                            <option value="vazir">Vazirmatn / Vazir</option>
+                            <option value="pinar">Pinar</option>
+                            <option value="inter">Inter (Latin)</option>
+                        </select>
+                        <div class="form-text mt-1">برای ذخیره دائمی از localStorage استفاده می‌شود</div>
+                    </div>
+
+                    <div class="dropdown-divider"></div>
                     <div class="dropdown-item text-center py-2">
                         <small class="text-muted">تغییرات بلافاصله اعمال می‌شوند</small>
                     </div>
@@ -273,39 +118,48 @@
             <li class="nav-item nav-item-dropdown-lg dropdown">
                 <a href="#" class="navbar-nav-link align-items-center rounded-pill p-1" data-bs-toggle="dropdown">
                     <div class="status-indicator-container">
-                        <img src="{{ asset(config('cms.admin_theme') . '/images/profile/profile.jpg') }}" class="w-32px h-32px rounded-pill" alt="">
+                        @php
+                            $admin = Auth::guard('admin')->user();
+                            $avatarUrl = $admin && $admin->avatar
+                                ? (\Illuminate\Support\Str::startsWith($admin->avatar, ['http://', 'https://']) ? $admin->avatar : asset('storage/' . ltrim($admin->avatar, '/')))
+                                : asset(config('cms.admin_theme') . '/images/profile/profile.jpg');
+                        @endphp
+                        <img src="{{ $avatarUrl }}" class="w-32px h-32px rounded-pill" alt="{{ $admin->name ?? 'Admin' }}" style="object-fit: cover;">
                         <span class="status-indicator bg-success"></span>
                     </div>
-                    <span class="d-none d-lg-inline-block mx-lg-2">{{ Auth::guard('admin')->user()->name ?? 'Guest' }}</span>
+                    <span class="d-none d-lg-inline-block mx-lg-2">{{ $admin->name ?? 'Guest' }}</span>
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="#" class="dropdown-item">
-                        <i class="ph-user-circle me-2"></i>
-                        {{ trans('auth.my_profile') }}
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="ph-currency-circle-dollar me-2"></i>
-                        {{ trans('auth.my_subscription') }}
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="ph-shopping-cart me-2"></i>
-                        {{ trans('auth.my_orders') }}
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="ph-envelope-open me-2"></i>
-                        {{ trans('auth.my_inbox') }}
-                        <span class="badge bg-primary rounded-pill ms-auto">26</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="ph-gear me-2"></i>
-                        {{ trans('auth.account_settings') }}
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="ph-sign-out me-2"></i>
-                        {{ trans('auth.logout') }}
-                    </a>
+                    @if($admin)
+                        @if(\Illuminate\Support\Facades\Route::has('admin.admins.edit'))
+                            <a href="{{ route('admin.admins.edit', $admin->id) }}" class="dropdown-item">
+                                <i class="ph-user-circle me-2"></i>
+                                {{ trans('auth.my_profile') }}
+                            </a>
+                        @endif
+                        @if(\Illuminate\Support\Facades\Route::has('admin.settings.index'))
+                            <a href="{{ route('admin.settings.index') }}" class="dropdown-item">
+                                <i class="ph-gear me-2"></i>
+                                {{ trans('auth.account_settings') }}
+                            </a>
+                        @endif
+                        <div class="dropdown-divider"></div>
+                        @if(\Illuminate\Support\Facades\Route::has('admin.logout'))
+                            <form action="{{ route('admin.logout') }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="dropdown-item">
+                                    <i class="ph-sign-out me-2"></i>
+                                    {{ trans('auth.logout') }}
+                                </button>
+                            </form>
+                        @endif
+                    @else
+                        <a href="{{ url(config('cms.admin_url', 'admin') . '/login') }}" class="dropdown-item">
+                            <i class="ph-sign-in me-2"></i>
+                            {{ trans('auth.login') }}
+                        </a>
+                    @endif
                 </div>
             </li>
         </ul>

@@ -2,11 +2,11 @@
 
 namespace RMS\Core\Controllers\Admin;
 
+use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use RMS\Core\Controllers\Admin\AdminController;
 use RMS\Core\Data\Field;
 use RMS\Core\Contracts\List\HasList;
 // Note: No forms for notifications list; only list and filters are implemented.
@@ -14,7 +14,7 @@ use RMS\Core\Contracts\Filter\ShouldFilter;
 use RMS\Core\Models\Notification;
 use RMS\Core\Models\Admin as CoreAdminModel;
 
-class NotificationsController extends AdminController implements HasList, ShouldFilter
+class NotificationsController extends ProjectAdminController implements HasList, ShouldFilter
 {
     // Required: table name
     public function table(): string

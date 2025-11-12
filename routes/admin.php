@@ -6,6 +6,8 @@ use RMS\Core\Controllers\Auth\AdminLoginController;
 use RMS\Core\Http\Controllers\Admin\BugLogController;
 use RMS\Core\Helpers\RouteHelper;
 use RMS\Core\Controllers\Admin\NotificationsController;
+	use RMS\Core\Controllers\Admin\UsersController;
+	use RMS\Core\Http\Controllers\Admin\DashboardController;
 
 // Admin routes with security middleware
 Route::middleware(['web'])
@@ -19,10 +21,7 @@ Route::middleware(['web'])
             Route::post('/login', [AdminLoginController::class, 'login'])
                 ->middleware('throttle:5,1') // More restrictive for login attempts
                 ->name('login.submit');
-    // Private file serve route (admin-only)
-    Route::get('files/{id}', [\RMS\Core\Http\Controllers\Admin\FileServeController::class, 'show'])
-        ->name('files.show');
-});
+			});
 
         // Authenticated admin routes
         Route::middleware([\RMS\Core\Middleware\AdminAuthenticate::class, 'verified:admin'])->group(function () {
@@ -30,7 +29,14 @@ Route::middleware(['web'])
             Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
             // Dashboard
-            
+				if (config('cms.dashboard.enabled', true)) {
+					Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+					Route::get('/dashboard', [DashboardController::class, 'index']);
+				}
+
+				// Private file serve route (admin-only)
+				Route::get('files/{id}', [\RMS\Core\Http\Controllers\Admin\FileServeController::class, 'show'])
+					->name('files.show');
 
             // Profile route - redirects to edit current admin
             Route::get('/profile', function () {
@@ -59,24 +65,43 @@ Route::middleware(['web'])
                 'admin.cache'
             );
 
-            // Admins Management Routes - Core Admin Management System 👨‍💻
-            RouteHelper::adminResource(
-                \RMS\Core\Controllers\Admin\AdminsController::class,
-                'admins',
-                [
-                    'export' => true,
-                    'sort' => true,
-                    'filter' => true,
-                    'toggle_active' => true,
-                    'batch_actions' => ['delete', 'activate', 'deactivate'],
-                    'ajax_files' => ['avatar'],
-                    'image_viewer' => true,
-                ]
-            );
+				// Admins Management Routes - Core Admin Management System 👨‍💻
+				if (config('cms.modules.admins', true)) {
+					RouteHelper::adminResource(
+						\RMS\Core\Controllers\Admin\AdminsController::class,
+						'admins',
+						[
+							'export' => true,
+							'sort' => true,
+							'filter' => true,
+							'toggle_active' => true,
+							'batch_actions' => ['delete', 'activate', 'deactivate'],
+							'ajax_files' => ['avatar'],
+							'image_viewer' => true,
+						]
+					);
 
-            Route::resource('admins', \RMS\Core\Controllers\Admin\AdminsController::class);
+					Route::resource('admins', \RMS\Core\Controllers\Admin\AdminsController::class);
+				}
 
-            // Users Management Routes - User Management System 👥
+				// Users Management Routes - User Management System 👥
+				if (config('cms.modules.users', true)) {
+					RouteHelper::adminResource(
+						UsersController::class,
+						'users',
+						[
+							'export' => true,
+							'sort' => true,
+							'filter' => true,
+							'toggle_active' => true,
+							'batch_actions' => ['delete', 'activate', 'deactivate'],
+							'ajax_files' => ['avatar'],
+							'image_viewer' => true,
+						]
+					);
+					Route::resource('users', UsersController::class);
+				}
+
             // Settings Management Routes - Simple Key-Value Settings ⚙️
             Route::resource('settings', SettingsController::class);
 

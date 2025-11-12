@@ -2,6 +2,7 @@
 
 namespace RMS\Core\Controllers\Admin;
 
+use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use RMS\Core\Data\UploadConfig;
@@ -27,7 +28,7 @@ use RMS\Core\Traits\Controllers\UploadFileControllerHelper;
  *
  * Controller for managing users with form and list functionality.
  */
-class UsersController extends AdminController implements HasList, HasBatch, ChangeBoolField, HasSort, HasForm, ShouldFilter, ShouldExport, HasUploadConfig, HasStats, HasFormStats
+class UsersController extends ProjectAdminController implements HasList, HasBatch, ChangeBoolField, HasSort, HasForm, ShouldFilter, ShouldExport, HasUploadConfig, HasStats, HasFormStats
 {
     use UploadFileControllerHelper;
     

@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.10] - 2025-10-21
+
+### 🚀 Added
+- **Install Command Locale Setup**
+  - New `configureAppLocale` step in `rms:install`
+  - Automatically sets `APP_LOCALE=fa` and `APP_FALLBACK_LOCALE=fa` in `.env`
+  - Skips gracefully if `.env` missing; logs status in installer summary
+- **Project AdminController Stub Publishing**
+  - Installer now publishes `App\Http\Controllers\Admin\AdminController` stub
+  - Stub registers shared view variables, optional dashboard search assets, and global hooks based on config flag
+
+### 🎨 Enhanced
+- **Navbar Layout Parity with Project**
+  - Core navbar now matches project customization (dynamic avatar, conditional profile links, logout form)
+  - Theme dropdown includes font selector (`#navbarFontSelect`) synced with global font switcher
+  - Placeholder search results removed; dropdown ready for dynamic JS injection
+- **Controller Hierarchy Alignment**
+  - Core admin controllers (`AdminsController`, `UsersController`, `SettingsController`, `NotificationsController`) now extend published project AdminController for shared behaviors
+
+### 🏗️ Technical
+- Added `config('cms.admin_controller.enable_dashboard_search_assets')` toggle for optional asset preload
+- Synced `assets/css/theme-font.css` and `assets/js/fonts.js` with project implementations (localStorage font persistence, multi-select support)
+- Updated installer progress list and messages to reflect new steps
+
+---
+
 ## [1.3.7] - 2025-10-20
 
 ### 🔧 Fixed

@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
+use RMS\Core\Controllers\Admin\AdminController as CoreAdminController;
+
+/**
+ * Project AdminController Stub.
+ *
+ * This file is published by the RMS installer to provide a convenient base class
+ * for all admin controllers inside your application.
+ *
+ * Feel free to customize the shared variables, global assets, or hooks to match
+ * your project requirements.
+ */
+abstract class AdminController extends CoreAdminController
+{
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct($filesystem);
+
+        // Share common variables with all admin views.
+        View::share('currentAdmin', Auth::guard('admin')->user());
+        View::share('appName', config('app.name'));
+    }
+
+    /**
+     * Hook executed before rendering any admin view.
+     * Register global assets or share additional data with views here.
+     */
+    protected function beforeRenderView(): void
+    {
+        parent::beforeRenderView();
+
+        if (config('cms.admin_controller.enable_dashboard_search_assets', false)) {
+            $this->view
+                ->withJs('search.js')
+                ->withJs('fonts.js')
+                ->withCss('theme-font.css');
+
+            $this->view->withJsVariables([
+                'searchEndPoint' => [
+                    'search' => route('admin.search'),
+                    'searchPreview' => route('admin.search.preview-renew'),
+                    'searchRenew' => route('admin.search.renew'),
+                ],
+            ]);
+        }
+    }
+}
+

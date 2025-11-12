@@ -2,6 +2,7 @@
 
 namespace RMS\Core\Controllers\Admin;
 
+use App\Http\Controllers\Admin\AdminController as ProjectAdminController;
 use Illuminate\Http\Request;
 use RMS\Core\Contracts\Actions\ChangeBoolField;
 use RMS\Core\Contracts\Batch\HasBatch;
@@ -26,7 +27,7 @@ use RMS\Core\Data\UploadConfig;
  *
  * Controller for managing admin users with form and list functionality.
  */
-class AdminsController extends AdminController implements
+class AdminsController extends ProjectAdminController implements
     HasList,
     HasBatch,
     ChangeBoolField,

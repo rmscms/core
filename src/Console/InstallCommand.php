@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RMS\Core\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -35,14 +36,16 @@ class InstallCommand extends Command
      * Installation steps configuration.
      */
     protected array $installationSteps = [
-        'publishConfig' => 'انتشار فایل‌های پیکربندی',
-        'publishAdminAssets' => 'انتشار فایل‌های ادمین',
-        'publishFrontAssets' => 'انتشار فایل‌های فرانت',
-        'publishAdminViews' => 'انتشار قالب‌های ادمین',
-        'publishTranslations' => 'انتشار فایل‌های ترجمه',
-        'createStorageLink' => 'ایجاد لینک فایل‌ها',
-        'runMigrations' => 'اجرای migration ها',
-        'runSeeder' => 'ایجاد داده‌های پایه'
+        'publishConfig' => 'Publishing configuration files',
+        'publishAdminAssets' => 'Publishing admin assets',
+        'publishFrontAssets' => 'Publishing front assets',
+        'publishAdminViews' => 'Publishing admin views',
+        'publishProjectAdminController' => 'Generating project AdminController base',
+        'publishTranslations' => 'Publishing translations',
+        'configureAppLocale' => 'Setting default application locale',
+        'createStorageLink' => 'Creating storage symlink',
+        'runMigrations' => 'Running migrations',
+        'runSeeder' => 'Seeding default data'
     ];
 
     /**
@@ -61,7 +64,7 @@ class InstallCommand extends Command
             $this->displayWelcomeBanner();
             
             if (!$this->option('force') && $this->isAlreadyInstalled()) {
-                $this->warn('⚠️  RMS CMS appears to be already installed!');
+            $this->warn('⚠️  RMS CMS appears to be already installed.');
                 
                 if (!$this->confirm('Do you want to continue anyway?', false)) {
                     $this->info('Installation cancelled.');
@@ -94,7 +97,7 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('vendor:publish', ['--tag' => 'cms-config']);
-            return ['step' => 'Publish Config', 'status' => true, 'message' => 'Published config/cms.php'];
+            return ['step' => 'Publish Config', 'status' => true, 'message' => 'Published configuration files'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Config', 'status' => false, 'message' => $e->getMessage()];
         }
@@ -109,7 +112,7 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('vendor:publish', ['--tag' => 'cms-admin-assets']);
-            return ['step' => 'Publish Admin Assets', 'status' => true, 'message' => 'Published to public/' . config('cms.admin_theme', 'admin')];
+            return ['step' => 'Publish Admin Assets', 'status' => true, 'message' => 'Published admin assets'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Admin Assets', 'status' => false, 'message' => $e->getMessage()];
         }
@@ -124,7 +127,7 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('vendor:publish', ['--tag' => 'cms-front-assets']);
-            return ['step' => 'Publish Front Assets', 'status' => true, 'message' => 'Published to public/' . config('cms.front_theme', 'panel')];
+            return ['step' => 'Publish Front Assets', 'status' => true, 'message' => 'Published front assets'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Front Assets', 'status' => false, 'message' => $e->getMessage()];
         }
@@ -139,7 +142,7 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('vendor:publish', ['--tag' => 'cms-admin-views']);
-            return ['step' => 'Publish Admin Views', 'status' => true, 'message' => 'Published to resources/views/vendor/cms'];
+            return ['step' => 'Publish Admin Views', 'status' => true, 'message' => 'Published admin view templates'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Admin Views', 'status' => false, 'message' => $e->getMessage()];
         }
@@ -154,9 +157,77 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('vendor:publish', ['--tag' => 'cms-translations']);
-            return ['step' => 'Publish Translations', 'status' => true, 'message' => 'Published to resources/lang'];
+            return ['step' => 'Publish Translations', 'status' => true, 'message' => 'Published translation files'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Translations', 'status' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Publish project-level AdminController stub.
+     *
+     * @return array
+     */
+    protected function publishProjectAdminController(): array
+    {
+        $filesystem = app(Filesystem::class);
+        $stubPath = dirname(__DIR__, 2) . '/stubs/Admin/AdminController.stub';
+        $targetPath = app_path('Http/Controllers/Admin/AdminController.php');
+        $stepLabel = 'Publish Project AdminController';
+
+        if (!$filesystem->exists($stubPath)) {
+            return ['step' => $stepLabel, 'status' => false, 'message' => 'Stub file not found'];
+        }
+
+        $filesystem->ensureDirectoryExists(dirname($targetPath));
+
+        if ($filesystem->exists($targetPath) && !$this->option('force')) {
+            return ['step' => $stepLabel, 'status' => true, 'message' => 'Skipped (file already exists)'];
+        }
+
+        try {
+            $filesystem->put($targetPath, $filesystem->get($stubPath));
+            return ['step' => $stepLabel, 'status' => true, 'message' => 'Created AdminController stub'];
+        } catch (\Exception $e) {
+            return ['step' => $stepLabel, 'status' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Ensure application locale defaults to Persian in .env.
+     */
+    protected function configureAppLocale(): array
+    {
+        $stepLabel = 'Configure Application Locale';
+        $filesystem = app(Filesystem::class);
+        $envPath = base_path('.env');
+
+        if (!$filesystem->exists($envPath)) {
+            return ['step' => $stepLabel, 'status' => false, 'message' => '.env file not found'];
+        }
+
+        try {
+            $envContents = $filesystem->get($envPath);
+            $original = $envContents;
+
+            $envContents = preg_replace('/^APP_LOCALE=.*$/m', 'APP_LOCALE=fa', $envContents, -1, $localeReplaced);
+            if ($localeReplaced === 0) {
+                $envContents .= "\nAPP_LOCALE=fa";
+            }
+
+            $envContents = preg_replace('/^APP_FALLBACK_LOCALE=.*$/m', 'APP_FALLBACK_LOCALE=fa', $envContents, -1, $fallbackReplaced);
+            if ($fallbackReplaced === 0) {
+                $envContents .= "\nAPP_FALLBACK_LOCALE=fa";
+            }
+
+            if ($envContents !== $original) {
+                $filesystem->put($envPath, $envContents);
+                return ['step' => $stepLabel, 'status' => true, 'message' => 'Updated .env locale settings'];
+            }
+
+            return ['step' => $stepLabel, 'status' => true, 'message' => 'Locale settings already configured'];
+        } catch (\Exception $e) {
+            return ['step' => $stepLabel, 'status' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -169,7 +240,7 @@ class InstallCommand extends Command
     {
         try {
             Artisan::call('storage:link');
-            return ['step' => 'Create Storage Link', 'status' => true, 'message' => 'Created symbolic link for storage'];
+            return ['step' => 'Create Storage Link', 'status' => true, 'message' => 'Created storage symbolic link'];
         } catch (\Exception $e) {
             return ['step' => 'Create Storage Link', 'status' => false, 'message' => $e->getMessage()];
         }
@@ -190,7 +261,7 @@ class InstallCommand extends Command
             $exitCode = Artisan::call('migrate', ['--force' => true]);
             
             if ($exitCode === 0) {
-                return ['step' => 'Run Migrations', 'status' => true, 'message' => 'Successfully ran all migrations'];
+                return ['step' => 'Run Migrations', 'status' => true, 'message' => 'Migrations completed successfully'];
             } else {
                 return ['step' => 'Run Migrations', 'status' => false, 'message' => 'Migration completed with warnings'];
             }
@@ -217,7 +288,7 @@ class InstallCommand extends Command
         
         try {
             Artisan::call('db:seed', ['--class' => \RMS\Core\Database\Seeders\AdminSeeder::class]);
-            return ['step' => 'Run Seeder', 'status' => true, 'message' => 'Seeded default admin'];
+                return ['step' => 'Run Seeder', 'status' => true, 'message' => 'Seeded default admin user'];
         } catch (\Exception $e) {
             return ['step' => 'Run Seeder', 'status' => false, 'message' => $e->getMessage()];
         }
@@ -231,9 +302,9 @@ class InstallCommand extends Command
     protected function displayWelcomeBanner(): void
     {
         $this->newLine();
-        $this->line('<fg=blue>╔══════════════════════════════════════════════════════════╗</>');        
-        $this->line('<fg=blue>║</><fg=white;bg=blue>                     RMS CMS INSTALLER                     </><fg=blue>║</>');        
-        $this->line('<fg=blue>╚══════════════════════════════════════════════════════════╝</>');        
+        $this->line('<fg=blue>╔══════════════════════════════════════════════════════════╗</>');
+        $this->line('<fg=blue>║</><fg=white;bg=blue>                     RMS CMS INSTALLER                     </><fg=blue>║</>');
+        $this->line('<fg=blue>╚══════════════════════════════════════════════════════════╝</>');
         $this->newLine();
         $this->info('🚀 Starting RMS CMS installation process...');
         $this->line('   This will set up all required files and database tables');
@@ -348,9 +419,9 @@ class InstallCommand extends Command
         }
         
         $this->newLine();
-        $this->line('<fg=green>╔══════════════════════════════════════════════════════════╗</>');        
-        $this->line('<fg=green>║</><fg=white;bg=green>               INSTALLATION SUCCESSFUL!                 </><fg=green>║</>');        
-        $this->line('<fg=green>╚══════════════════════════════════════════════════════════╝</>');        
+        $this->line('<fg=green>╔══════════════════════════════════════════════════════════╗</>');
+        $this->line('<fg=green>║</><fg=white;bg=green>               INSTALLATION SUCCESSFUL!                 </><fg=green>║</>');
+        $this->line('<fg=green>╚══════════════════════════════════════════════════════════╝</>');
         $this->newLine();
         
         $this->info('🔑 Admin Login Credentials:');
