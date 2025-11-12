@@ -29,8 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🏗️ Technical
 - Added `config('cms.admin_controller.enable_dashboard_search_assets')` toggle for optional asset preload
 - Synced `assets/css/theme-font.css` and `assets/js/fonts.js` with project implementations (localStorage font persistence, multi-select support)
-- Introduced `ProjectAdminController` bridge to gracefully fallback to core base when project stub not yet published
 - Updated installer progress list and messages to reflect new steps
+- Introduced `ProjectAdminController` bridge class to gracefully fall back to core base when project stub is absent, preventing installer bootstrap failures
 
 ---
 
