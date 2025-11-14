@@ -16,9 +16,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Drop existing users table if it exists (Laravel default)
-        Schema::dropIfExists('users');
-        
+        if (Schema::hasTable('users')) {
+            return;
+        }
+
         // Create our enhanced users table
         Schema::create('users', function (Blueprint $table) {
             $table->id()->comment('Primary key');

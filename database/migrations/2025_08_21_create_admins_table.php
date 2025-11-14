@@ -16,6 +16,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('admins')) {
+            return;
+        }
+
         Schema::create('admins', function (Blueprint $table) {
             $table->id()->comment('Primary key');
             $table->string('avatar')->nullable()->comment('Admin profile picture path');
