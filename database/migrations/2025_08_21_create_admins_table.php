@@ -17,6 +17,12 @@ return new class extends Migration
     public function up(): void
     {
         if (Schema::hasTable('admins')) {
+            if (!Schema::hasColumn('admins', 'deleted_at')) {
+                Schema::table('admins', function (Blueprint $table) {
+                    $table->softDeletes()->comment('Soft delete timestamp');
+                });
+            }
+
             return;
         }
 
@@ -46,6 +52,16 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (!Schema::hasTable('admins')) {
+            return;
+        }
+
+        if (Schema::hasColumn('admins', 'deleted_at')) {
+            Schema::table('admins', function (Blueprint $table) {
+                $table->dropSoftDeletes();
+            });
+        }
+
         Schema::dropIfExists('admins');
     }
 };
