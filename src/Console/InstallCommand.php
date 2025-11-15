@@ -37,6 +37,7 @@ class InstallCommand extends Command
      */
     protected array $installationSteps = [
         'publishConfig' => 'Publishing configuration files',
+        'publishPluginsConfig' => 'Publishing plugins configuration',
         'publishAdminAssets' => 'Publishing admin assets',
         'publishFrontAssets' => 'Publishing front assets',
         'publishAdminViews' => 'Publishing admin views',
@@ -100,6 +101,21 @@ class InstallCommand extends Command
             return ['step' => 'Publish Config', 'status' => true, 'message' => 'Published configuration files'];
         } catch (\Exception $e) {
             return ['step' => 'Publish Config', 'status' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Publish the plugins configuration file.
+     *
+     * @return array
+     */
+    protected function publishPluginsConfig(): array
+    {
+        try {
+            Artisan::call('vendor:publish', ['--tag' => 'cms-plugins-config']);
+            return ['step' => 'Publish Plugins Config', 'status' => true, 'message' => 'Published plugins configuration'];
+        } catch (\Exception $e) {
+            return ['step' => 'Publish Plugins Config', 'status' => false, 'message' => $e->getMessage()];
         }
     }
 

@@ -161,7 +161,7 @@
                                 @break
 
                                 {{-- FILE Input --}}
-@case(\\RMS\\Core\\Data\\Field::FILE)
+                                @case(\RMS\Core\Data\Field::FILE)
                                     @php
                                         // Build data/accept/multiple attributes from field->attributes
                                         $fileInputAttributes = '';

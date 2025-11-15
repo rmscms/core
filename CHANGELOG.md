@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.18] - 2025-11-15
+
+### 🐛 Fixed
+- **Blade Syntax Error**: اصلاح escape دوباره در `@case` directive
+  - تغییر `@case(\\RMS\\Core\\Data\\Field::FILE)` به `@case(\RMS\Core\Data\Field::FILE)`
+  - رفع خطای syntax در view `admin/form/index.blade.php`
+
+---
+
 ## [1.3.17] - 2025-11-15
 
 ### 🚀 Added
@@ -15,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - متد `getPackageNamespace()` برای دریافت namespace فعلی
   - متد `usePackageNamespace(string $namespace)` به عنوان helper method
   - پشتیبانی از پکیج‌های شخص ثالث برای استفاده از view های خودشان
+- **Install Command Enhancement**: بهبود دستور `rms:install`
+  - اضافه شدن publish خودکار `config/plugins.php` در هنگام نصب
+  - اطمینان از وجود فایل plugins برای پروژه‌های جدید
 
 ### 🎨 Enhanced
 - **View Template Manager**: بهبود سیستم مدیریت template ها
@@ -25,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🏗️ Technical
 - افزودن property `$packageNamespace` به trait `ViewTemplateManager`
 - اپدیت متد `buildTemplatePath()` برای پشتیبانی از namespace دینامیک
+- اضافه شدن متد `publishPluginsConfig()` به `InstallCommand`
 - تست‌های کامل برای تضمین عملکرد صحیح با namespace های مختلف
 
 ### 📝 Example Usage
@@ -37,6 +50,10 @@ return $this->view(); // cms::admin.dashboard
 $this->view->usePackageNamespace('shop')
     ->setTpl('admin.dashboard');
 return $this->view(); // shop::admin.dashboard
+
+// نصب RMS Core با plugins config
+php artisan rms:install
+// حالا config/plugins.php خودکار publish میشه
 ```
 
 ---
