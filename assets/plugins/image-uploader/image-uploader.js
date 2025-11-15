@@ -1144,8 +1144,17 @@ class RMSImageUploader {
      */
     getControllerName() {
         const path = window.location.pathname;
-        const match = path.match(/\/admin\/([^\/]+)/);
-        return match ? match[1] : 'upload';
+        // Extract path between /admin/ and the ID
+        // Examples:
+        // /admin/users/1 -> users
+        // /admin/shop/products/1 -> shop/products
+        const match = path.match(/\/admin\/(.+?)\/(\d+)/);
+        if (match) {
+            return match[1];
+        }
+        // Fallback: if no ID in path, get first segment after /admin/
+        const fallbackMatch = path.match(/\/admin\/([^\/]+)/);
+        return fallbackMatch ? fallbackMatch[1] : 'upload';
     }
 
     /**

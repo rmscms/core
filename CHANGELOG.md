@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.19] - 2025-11-15
+
+### 🐛 Fixed
+- **Image Uploader AJAX Routes**: رفع مشکل تولید URL برای روت‌های چند سطحی
+  - اصلاح `getControllerName()` برای پشتیبانی از مسیرهای چند سطحی (مثل `/admin/shop/products/1`)
+  - افزودن fallback برای مسیرهای تک سطحی (مثل `/admin/users/1`)
+  - رفع خطای `The route admin/shop/1/ajax-upload/gallery[] could not be found`
+  - بهبود regex برای استخراج صحیح controller path از URL
+
+---
+
 ## [1.3.18] - 2025-11-15
 
 ### 🐛 Fixed
