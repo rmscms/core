@@ -121,6 +121,44 @@ trait ViewTemplateManager
     }
 
     /**
+     * Package namespace for views (default: 'cms')
+     */
+    protected ?string $packageNamespace = null;
+
+    /**
+     * Set package namespace for views.
+     *
+     * @param string|null $namespace
+     * @return $this
+     */
+    public function setPackageNamespace(?string $namespace): self
+    {
+        $this->packageNamespace = $namespace;
+        return $this;
+    }
+
+    /**
+     * Get package namespace for views.
+     *
+     * @return string|null
+     */
+    public function getPackageNamespace(): ?string
+    {
+        return $this->packageNamespace;
+    }
+
+    /**
+     * Use package namespace for views (helper method).
+     *
+     * @param string $namespace
+     * @return $this
+     */
+    public function usePackageNamespace(string $namespace): self
+    {
+        return $this->setPackageNamespace($namespace);
+    }
+
+    /**
      * Build template path for view rendering.
      *
      * @param bool $usePackageNamespace
@@ -129,7 +167,8 @@ trait ViewTemplateManager
     protected function buildTemplatePath(bool $usePackageNamespace): string
     {
         if ($usePackageNamespace) {
-            return 'cms::' . $this->theme . '.' . $this->tpl;
+            $namespace = $this->packageNamespace ?? 'cms';
+            return $namespace . '::' . $this->theme . '.' . $this->tpl;
         }
         
         return $this->theme . '.' . $this->tpl;

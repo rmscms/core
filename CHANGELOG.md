@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.3.17] - 2025-11-15
+
+### 🚀 Added
+- **Custom Package Namespace Support**: قابلیت استفاده از namespace سفارشی برای view ها
+  - متد `setPackageNamespace(?string $namespace)` برای تنظیم namespace سفارشی
+  - متد `getPackageNamespace()` برای دریافت namespace فعلی
+  - متد `usePackageNamespace(string $namespace)` به عنوان helper method
+  - پشتیبانی از پکیج‌های شخص ثالث برای استفاده از view های خودشان
+
+### 🎨 Enhanced
+- **View Template Manager**: بهبود سیستم مدیریت template ها
+  - `buildTemplatePath()` حالا از namespace سفارشی پشتیبانی می‌کند
+  - در صورت عدم تنظیم namespace، به صورت پیش‌فرض از `cms` استفاده می‌شود
+  - سازگاری کامل با پروژه‌های موجود (backward compatible)
+
+### 🏗️ Technical
+- افزودن property `$packageNamespace` به trait `ViewTemplateManager`
+- اپدیت متد `buildTemplatePath()` برای پشتیبانی از namespace دینامیک
+- تست‌های کامل برای تضمین عملکرد صحیح با namespace های مختلف
+
+### 📝 Example Usage
+```php
+// استفاده از namespace پیش‌فرض (cms)
+$this->view->setTpl('admin.dashboard');
+return $this->view(); // cms::admin.dashboard
+
+// استفاده از namespace سفارشی
+$this->view->usePackageNamespace('shop')
+    ->setTpl('admin.dashboard');
+return $this->view(); // shop::admin.dashboard
+```
+
+---
+
 ## [1.3.16] - 2025-11-14
 
 ### 🔧 Changed
